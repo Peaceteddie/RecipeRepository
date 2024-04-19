@@ -6,15 +6,11 @@
 </button>
 
 @code {
-    [Parameter]
-    public Recipe? Recipe { get; set; }
-    [Parameter]
-    public EventCallback<Recipe> CardClicked { get; set; }
+    [Parameter] public Recipe? Recipe { get; set; }
 
-    private void OnCardClick()
-    {
-        CardClicked.InvokeAsync(Recipe);
-    }
+    [Parameter] public EventCallback<Recipe> CardClicked { get; set; }
+
+    void OnCardClick() => CardClicked.InvokeAsync(Recipe);
 }
 
 <style>
