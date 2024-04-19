@@ -1,0 +1,73 @@
+@if (Recipe is not null && IsVisible)
+{
+    <div class="modal d-block" @onclick="() => Hide()">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">@Recipe.Name</h5>
+                    <button type="button" class="btn-close" @onclick="Hide"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="d-flex flex-column text-center">
+                        <img class="img-fluid" src="/images/@Recipe.Image" alt="@Recipe.Name" />
+                        <p>@Recipe.Description</p>
+                    </div>
+                    <div class="d-flex flex-row">
+                        <ul class="w-50">
+                            @foreach (var ingredient in Recipe.Ingredients)
+                            {
+                                <li>
+                                    <div class="d-flex flex-row gap-2">
+                                        <div class="col-2 text-end">
+                                            @ingredient.Quantity
+                                        </div>
+                                        <div class="col-4">
+                                            @ingredient.Unit
+                                        </div>
+                                        <div class="">
+                                            @ingredient.Name
+                                        </div>
+                                    </div>
+                                </li>
+                            }
+                        </ul>
+                        <ol>
+                            @foreach (var instruction in Recipe.Instructions)
+                            {
+                                <li>@instruction</li>
+                            }
+                        </ol>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+
+@code {
+    [Parameter]
+    public Recipe? Recipe { get; set; }
+
+    bool IsVisible { get; set; }
+
+    string show => IsVisible ? "d-block" : "";
+
+    protected override void OnParametersSet()
+    {
+        if (Recipe is not null)
+            Show(Recipe);
+    }
+
+    public void Show(Recipe recipe)
+    {
+        Recipe = recipe;
+        IsVisible = true;
+    }
+
+    public void Hide()
+    {
+        Recipe = null;
+        IsVisible = false;
+    }
+}

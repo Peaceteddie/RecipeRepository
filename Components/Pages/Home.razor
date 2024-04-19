@@ -1,0 +1,67 @@
+﻿@page "/{id:int?}"
+@rendermode InteractiveServer
+@inject RecipeDbContext context;
+@using Microsoft.EntityFrameworkCore
+
+<PageTitle>Recipes</PageTitle>
+
+<RecipeDetailsModal Recipe="recipe" />
+
+<h1 class="text-center">Recipes</h1>
+
+<div class="d-flex justify-content-center pb-4">
+    <input class="bg-light px-3 search w-50" type="text" @bind-value="searchTerm" @oninput="UpdateFiltered"
+        placeholder="Search..." />
+</div>
+
+<div class="d-flex flex-column gap-2">
+    @if (filteredRecipes is not null || recipes is not null)
+    {
+        foreach (var recipe in filteredRecipes ?? recipes ?? [])
+        {
+            <RecipeCard Recipe="@recipe" CardClicked="() => ShowDetails(recipe)" />
+        }
+    }
+    else
+    {
+        <p>Loading...</p>
+    }
+</div>
+
+@code {
+    [Parameter]
+    public int? id { get; set; }
+    string? searchTerm { get; set; }
+    Recipe? recipe { get; set; }
+    List<Recipe>? recipes { get; set; }
+    List<Recipe>? filteredRecipes { get; set; }
+    protected override async Task OnInitializedAsync()
+    {
+        recipes = await context.GetRecipesWithIngredients();
+        recipe = id.HasValue ? recipes.FirstOrDefault(r => r.Id == id) : null;
+    }
+    void UpdateFiltered(ChangeEventArgs e)
+    {
+        searchTerm = e.Value?.ToString();
+        if (recipes != null)
+        {
+            filteredRecipes = string.IsNullOrEmpty(searchTerm)
+            ? recipes
+            : recipes.Where(r => r.Name.Contains(searchTerm, StringComparison.OrdinalIgnoreCase)).ToList();
+        }
+    }
+    void ShowDetails(Recipe recipe)
+    {
+        this.recipe = recipe;
+    }
+}
+
+<style>
+    .search {
+        border: none;
+        border-radius: 5px;
+        box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.2);
+        height: 40px;
+        font-size: 1.5rem;
+    }
+</style>

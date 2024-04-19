@@ -1,0 +1,76 @@
+@using RecipeRepository;
+@using Microsoft.EntityFrameworkCore;
+@inject RecipeDbContext _recipeDbContext;
+
+<PageTitle>Recipes</PageTitle>
+
+
+<div class="d-flex flex-row justify-content-evenly">
+    @if (recipes is not null)
+    {
+        <div class="col-3 d-flex flex-column">
+            <h2>Recipes</h2>
+            <ul>
+                @foreach (var recipe in recipes)
+                {
+                    <li>
+                        <a href="/@recipe.Id">
+                            @recipe.Name
+                        </a>
+                    </li>
+                }
+            </ul>
+        </div>
+
+    }
+    <div class="col-6 d-flex flex-column">
+        @if (recipe is not null)
+        {
+            <h2>@recipe.Name</h2>
+            <p>@recipe.Description</p>
+            <ul>
+                @foreach (var ingredient in recipe.Ingredients)
+                {
+                    <li>@ingredient.Name</li>
+                }
+            </ul>
+            <ol>
+                @foreach (var instruction in recipe.Instructions)
+                {
+                    <li>@instruction</li>
+                }
+            </ol>
+        }
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public int? id { get; set; }
+    private Recipe? recipe { get; set; }
+    private ICollection<Recipe>? recipes { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    => recipes = await _recipeDbContext.GetRecipesWithIngredients();
+
+    protected override async Task OnParametersSetAsync()
+    => recipe = id is not null
+    ? await _recipeDbContext.GetRecipeWithIngredients(id.Value) : null;
+}
+
+<style>
+    ol {
+        list-style: none;
+        counter-reset: steps;
+    }
+
+    ol li {
+        counter-increment: steps;
+    }
+
+    ol li::before {
+        content: "Step " counter(steps) ")";
+        margin-right: 0.5rem;
+        color: #ff6f00;
+    }
+</style>

@@ -1,0 +1,59 @@
+<button class="recipe-card" @onclick="OnCardClick">
+    <img class="recipe-image" src="/images/@Recipe?.Image" alt="@Recipe?.Name" />
+    <div class="recipe-details">
+        <h2 class="recipe-title">@Recipe?.Name</h2>
+    </div>
+</button>
+
+@code {
+    [Parameter]
+    public Recipe? Recipe { get; set; }
+    [Parameter]
+    public EventCallback<Recipe> CardClicked { get; set; }
+
+    private void OnCardClick()
+    {
+        CardClicked.InvokeAsync(Recipe);
+    }
+}
+
+<style>
+    .recipe-card {
+        background: transparent;
+        border: none;
+        max-height: 256px;
+        max-width: 256px;
+        padding: 0;
+    }
+
+    .recipe-image {
+        border-radius: 0.5rem;
+        max-height: 100%;
+        max-width: 100%;
+    }
+
+    .recipe-details {
+        --height: 2.5rem;
+        background: #000a;
+        border-radius: 0 0 20px 20px;
+        bottom: var(--height);
+        color: #eee;
+        height: var(--height);
+        justify-content: center;
+        max-height: var(--height);
+        display: flex;
+        flex-direction: column;
+        position: relative;
+    }
+
+    .recipe-title {
+        border-radius: 0 0 20px 20px;
+        color: orange;
+        font-size: 1.2rem;
+        margin: 0;
+        overflow: hidden;
+        padding: 0.5rem;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+</style>
