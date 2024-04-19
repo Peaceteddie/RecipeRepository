@@ -9,7 +9,7 @@ public class Ingredient
     [Key]
     public int Id { get; set; }
     [Required]
-    public required string Name { get; set; }
+    public string? Name { get; set; }
     [Required]
     public float Quantity { get; set; }
     [Required]

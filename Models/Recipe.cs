@@ -9,13 +9,13 @@ public class Recipe
     [Key]
     public int Id { get; set; }
     [Required]
-    public required string Name { get; set; }
+    public string? Name { get; set; }
     [Required]
-    public required string Description { get; set; }
+    public string? Description { get; set; }
     [Required]
-    public required List<Ingredient> Ingredients { get; set; }
+    public List<Ingredient> Ingredients { get; set; } = [];
     [Required]
-    public required List<string> Instructions { get; set; }
+    public List<string> Instructions { get; set; } = [];
     [Required]
-    public required string Image { get; set; }
+    public string? Image { get; set; }
 }
