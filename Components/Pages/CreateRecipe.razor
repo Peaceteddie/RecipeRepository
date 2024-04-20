@@ -1,0 +1,86 @@
+@page "/create-recipe"
+@rendermode InteractiveServer
+
+<PageTitle>Create Recipe</PageTitle>
+
+@if (Recipe is null)
+{
+    <h1>Loading...</h1>
+}
+else
+{
+    <EditForm Model="Recipe" OnValidSubmit="Submit" FormName="RecipeCreator" class="d-flex flex-column p-5">
+        <DataAnnotationsValidator />
+        <ValidationSummary />
+
+        <label for="name">Name</label>
+        <InputText class="form-control" id="name" @bind-Value="Recipe.Name" />
+
+        <label for="description">Description</label>
+        <InputText class="form-control" id="description" @bind-Value="Recipe.Description" />
+
+        <label for="ingredients">Ingredients</label>
+        @if (Recipe?.Ingredients != null)
+        {
+            <div class="d-flex justify-content-center">
+                <ul>
+                    @foreach (var (ingredient, index) in Recipe.Ingredients.Select((ingredient, index) => (ingredient, index)))
+                    {
+                        <li class="input-group">
+                            <div>
+                                <label for="i-quantity">Quantity</label>
+                                <InputNumber class="form-control i-quantity" id="i-quantity" @bind-Value="ingredient.Quantity" />
+                            </div>
+                            <div>
+                                <label for="i-unit">Unit</label>
+                                <InputSelect class="form-control i-unit" id="i-unit" @bind-Value="ingredient.Unit">
+                                    @foreach (var unit in Enum.GetValues<IngredientUnit>())
+                                    {
+                                        <option value="@unit">@unit</option>
+                                    }
+                                </InputSelect>
+                            </div>
+                            <div>
+                                <label for="i-name">Name</label>
+                                <InputText class="form-control i-name" id="i-name" @bind-Value="ingredient.Name" />
+                            </div>
+                            <button class="align-self-end btn btn-danger h-50" type="button"
+                                @onclick="@(()=>Recipe?.Ingredients?.RemoveAt(index))">Remove</button>
+                        </li>
+                    }
+                </ul>
+            </div>
+        }
+        <button class="btn btn-info mx-5" type="button"
+            @onclick="@(()=>Recipe?.Ingredients?.Add(new Ingredient()))">+</button>
+
+        <label for="instructions">Instructions</label>
+        @if (Recipe?.Instructions != null)
+        {
+            <div class="d-flex justify-content-center">
+                <ol>
+                    @foreach (var index in Enumerable.Range(0, Recipe.Instructions.Count))
+                    {
+                        <li class="align-items-center d-flex gap-2 input-group">
+                            <label for="i-instruction">Step @(index + 1):</label>
+                            <InputText class="form-control list-group-item" @bind-Value="Recipe.Instructions[index]" />
+                            <button class="btn btn-danger" type="button"
+                                @onclick="@(()=>Recipe?.Instructions?.RemoveAt(index))">Remove</button>
+                        </li>
+                    }
+                </ol>
+            </div>
+        }
+        <button class="btn btn-info mx-5" type="button" @onclick="@(()=>Recipe?.Instructions?.Add(""))">+</button>
+        <button class="btn btn-primary" type="submit">Submit</button>
+    </EditForm>
+}
+
+@code {
+    [SupplyParameterFromForm] Recipe? Recipe { get; set; } = new();
+
+    void Submit()
+    {
+        // Save the recipe
+    }
+}
