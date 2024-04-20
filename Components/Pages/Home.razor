@@ -47,7 +47,7 @@
         {
             filteredRecipes = string.IsNullOrEmpty(searchTerm)
             ? recipes
-            : recipes.Where(r => r.Name.Contains(searchTerm, StringComparison.OrdinalIgnoreCase)).ToList();
+            : recipes.Where(r => r!.Name!.Contains(searchTerm, StringComparison.OrdinalIgnoreCase)).ToList();
         }
     }
     void ShowDetails(Recipe recipe)
