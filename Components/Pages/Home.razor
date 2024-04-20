@@ -5,7 +5,7 @@
 
 <PageTitle>Recipes</PageTitle>
 
-<RecipeDetailsModal Recipe="recipe" />
+<RecipeDetailsModal Recipe="recipe" Callback="ClearRecipe" />
 
 <h1 class="text-center">Recipes</h1>
 
@@ -54,6 +54,8 @@
     {
         this.recipe = recipe;
     }
+
+    void ClearRecipe() => recipe = null;
 }
 
 <style>

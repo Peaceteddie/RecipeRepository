@@ -53,6 +53,9 @@
 
     string show => IsVisible ? "d-block" : "";
 
+    [Parameter]
+    public EventCallback Callback { get; set; }
+
     protected override void OnParametersSet()
     {
         if (Recipe is not null)
@@ -69,5 +72,6 @@
     {
         Recipe = null;
         IsVisible = false;
+        Callback.InvokeAsync();
     }
 }
