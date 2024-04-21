@@ -3,7 +3,6 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace RecipeRepository;
 
-[Table("Recipes")]
 public class Recipe
 {
     [Key]
@@ -17,5 +16,18 @@ public class Recipe
     [Required]
     public List<string> Instructions { get; set; } = [];
     [Required]
-    public string? Image { get; set; }
+    public RecipeImage Image { get; set; } = new RecipeImage();
+
+    [NotMapped]
+    public bool IsUploadInProgress = false;
+
+    public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
+    {
+        if (IsUploadInProgress)
+        {
+            yield return new ValidationResult(
+                "File has not finished uploading yet",
+                [nameof(IsUploadInProgress)]);
+        }
+    }
 }

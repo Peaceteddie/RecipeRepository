@@ -3,7 +3,6 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace RecipeRepository;
 
-[Table("Ingredients")]
 public class Ingredient
 {
     [Key]

@@ -32,7 +32,7 @@ namespace RecipeRepository
                             "Cook until golden brown",
                             "Serve with your favorite toppings"
                         ],
-                        Image = "pancakes.jpeg"
+                        Image = new RecipeImage() { Path = @"/images/first_image.jpeg", OriginalName = "pancakes.jpeg" }
                     },
                     new Recipe
                     {
@@ -56,13 +56,13 @@ namespace RecipeRepository
                             "Stir well to coat the spaghetti with the sauce",
                             "Serve hot with additional grated parmesan on top"
                         ],
-                        Image = "pasta_carbonara.jpeg"
+                        Image =  new RecipeImage() { Path = @"/images/second_image.jpeg", OriginalName = "spaghetti_carbonara.jpeg" }
                     },
                     new Recipe
-                {
-                    Name = "Roasted lamb with roasted potatoes and roasted vegetables",
-                    Description = "A delicious and hearty meal",
-                    Ingredients =
+                    {
+                        Name = "Roasted lamb with roasted potatoes and roasted vegetables",
+                        Description = "A delicious and hearty meal",
+                        Ingredients =
                     [
                         new Ingredient { Name = "Lamb leg", Quantity = 1, Unit = IngredientUnit.Whole },
                         new Ingredient { Name = "Potatoes", Quantity = 500, Unit = IngredientUnit.Grams },
@@ -75,7 +75,7 @@ namespace RecipeRepository
                         new Ingredient { Name = "Salt", Quantity = 1, Unit = IngredientUnit.Teaspoon },
                         new Ingredient { Name = "Black Pepper", Quantity = 1, Unit = IngredientUnit.Teaspoon }
                     ],
-                    Instructions =
+                        Instructions =
                     [
                         "Preheat the oven to 180°C",
                         "Rub the lamb leg with olive oil, garlic, rosemary, thyme, salt, and black pepper",
@@ -86,8 +86,8 @@ namespace RecipeRepository
                         "Remove the lamb leg and vegetables from the oven and let rest for 10 minutes",
                         "Slice the lamb leg and serve with the roasted vegetables"
                     ],
-                    Image = "roasted_lamb.jpeg"
-                }
+                        Image = new RecipeImage() { Path = @"/images/third_image.jpeg", OriginalName = "roasted_lamb.jpeg"}
+                    }
                 };
 
             context.Recipes.AddRange(recipes);

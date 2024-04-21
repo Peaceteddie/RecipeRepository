@@ -1,5 +1,5 @@
 <button class="recipe-card" @onclick="OnCardClick">
-    <img class="recipe-image" src="/images/@Recipe?.Image" alt="@Recipe?.Name" />
+    <img class="recipe-image" src="@Recipe?.Image!.Path" alt="@Recipe?.Name" />
     <div class="recipe-details">
         <h2 class="recipe-title">@Recipe?.Name</h2>
     </div>
