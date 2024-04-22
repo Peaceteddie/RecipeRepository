@@ -9,23 +9,29 @@
 
 <h1 class="text-center">Recipes</h1>
 
-<div class="d-flex justify-content-center pb-4">
-    <input class="bg-light px-3 search w-50" type="text" @bind-value="searchTerm" @oninput="UpdateFiltered"
-        placeholder="Search..." />
+<div class="d-flex justify-content-center mb-5">
+    <div id="search-container">
+        <input class="bg-light m-3 px-3 search w-10" type="text" @bind-value="searchTerm" @oninput="UpdateFiltered"
+            placeholder="Search..." />
+    </div>
 </div>
 
-<div class="d-flex flex-column gap-2">
-    @if (filteredRecipes is not null || recipes is not null)
-    {
-        foreach (var recipe in filteredRecipes ?? recipes ?? [])
-        {
-            <RecipeCard Recipe="@recipe" CardClicked="() => ShowDetails(recipe)" />
-        }
-    }
-    else
-    {
-        <p>Loading...</p>
-    }
+<div class="recipe-container">
+    <div class="recipe-container-inner">
+        <div class="recipe-inner-inner">
+            @if (filteredRecipes is not null || recipes is not null)
+            {
+                foreach (var recipe in filteredRecipes ?? recipes ?? [])
+                {
+                    <RecipeCard Recipe="@recipe" CardClicked="() => ShowDetails(recipe)" />
+                }
+            }
+            else
+            {
+                <p>Loading...</p>
+            }
+        </div>
+    </div>
 </div>
 
 @code {
@@ -59,11 +65,70 @@
 }
 
 <style>
+    body {
+        --inner-shadow: 0 0 5px #000 inset, 0 0 5px #fff inset;
+        --yellow-pastel: #ffaa;
+        background: conic-gradient(#faa, #aaf, #afa, #faf, #faa) fixed;
+        backdrop-filter: blur(50px);
+        display: flex;
+    }
+
+    .recipe-container {
+        align-content: flex-start;
+        align-self: center;
+        background: var(--yellow-pastel);
+        box-shadow: 0 10px 10px 8px #ffca inset, 0 -15px 15px #0002 inset;
+        border-radius: 5rem;
+        min-width: 50vw;
+        padding: 2rem;
+        resize: inline;
+        overflow:auto;
+
+        height: 80vh;
+        width: 60vw;
+
+        .recipe-container-inner {
+            background: #fffff8;
+            border-radius: 5rem;
+            box-shadow: var(--inner-shadow);
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            padding: 2rem;
+
+            height: 100%;
+            width: 100%;
+
+
+            .recipe-inner-inner {
+                border-radius: 2rem;
+                display: flex;
+                flex-wrap: wrap;
+                gap: 2rem;
+                justify-content: center;
+                mask: linear-gradient(to bottom, transparent 0%, black 1%, black 95%, transparent 100%);
+                overflow: auto;
+                padding-block: 2rem;
+
+                height: 100%;
+                width: 100%;
+            }
+        }
+    }
+
     .search {
         border: none;
-        border-radius: 5px;
-        box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.2);
+        border-radius: 10rem;
+        box-shadow: var(--inner-shadow);
         height: 40px;
         font-size: 1.5rem;
+    }
+
+    #search-container {
+        background-color: var(--yellow-pastel);
+        border-radius: 10rem;
+        box-shadow: 0 5px 5px #ffca inset, 0 -5px 5px #0002 inset;
+        display: flex;
+        justify-content: center;
     }
 </style>

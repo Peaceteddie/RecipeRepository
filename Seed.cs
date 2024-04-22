@@ -9,6 +9,8 @@ namespace RecipeRepository
             context.Database.EnsureDeleted();
             context.Database.EnsureCreated();
 
+            var files = Directory.GetFiles("wwwroot/images");
+
             var recipes = new[]
             {
                     new Recipe
@@ -90,7 +92,44 @@ namespace RecipeRepository
                     }
                 };
 
+            List<Recipe> GenerateBulkRecipes()
+            {
+                var extra = new List<Recipe>();
+
+                foreach (int i in Enumerable.Range(1, 100))
+                {
+                    extra.Add(new Recipe
+                    {
+                        Name = $"Recipe {i}",
+                        Description = $"Description {i}",
+                        Ingredients =
+                        [
+                            new Ingredient { Name = "Ingredient 1", Quantity = 100, Unit = IngredientUnit.Grams },
+                            new Ingredient { Name = "Ingredient 2", Quantity = 1, Unit = IngredientUnit.Whole },
+                            new Ingredient { Name = "Ingredient 3", Quantity = 200, Unit = IngredientUnit.Milliliters },
+                            new Ingredient { Name = "Ingredient 4", Quantity = 20, Unit = IngredientUnit.Grams },
+                            new Ingredient { Name = "Ingredient 5", Quantity = 10, Unit = IngredientUnit.Grams },
+                            new Ingredient { Name = "Ingredient 6", Quantity = 1, Unit = IngredientUnit.Pinch }
+                        ],
+                        Instructions =
+                        [
+                            "Instruction 1",
+                            "Instruction 2",
+                            "Instruction 3",
+                            "Instruction 4",
+                            "Instruction 5"
+                        ],
+                        Image = new RecipeImage() { Path = "/images/" + Path.GetFileName(files[i % files.Length]), OriginalName = $"image_{i}.jpeg" }
+                    });
+                }
+
+                return extra;
+            }
+
             context.Recipes.AddRange(recipes);
+
+            context.Recipes.AddRange(GenerateBulkRecipes());
+
             context.SaveChanges();
 
             Console.WriteLine("");
