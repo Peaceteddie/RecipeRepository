@@ -1,7 +1,10 @@
 ﻿@page "/{id:int?}"
 @rendermode InteractiveServer
-@inject RecipeDbContext context;
+
 @using Microsoft.EntityFrameworkCore
+
+@inject RecipeDbContext context;
+@inject NavigationManager NavigationalManager;
 
 <PageTitle>Recipes</PageTitle>
 
@@ -17,6 +20,8 @@
     @onclick="() => ShowDetails(recipes != null && recipes.Count > 0 ? recipes[new Random().Next(0, recipes.Count)] : null)">
     Random
 </button>
+
+<NavLink id="seasonal-map" class="btn btn-primary" href="/seasonal-map">Seasonal Map</NavLink>
 
 <div class="d-flex justify-content-center mb-5">
     <div id="search-container">
@@ -125,6 +130,23 @@
         top: 10vh;
         right: 70vw;
         width: 10rem;
+        color: inherit;
+    }
+
+    #seasonal-map {
+        background: var(--yellow-pastel);
+        box-shadow: 2px 5px 5px #ffca inset, -2px -5px 5px #0002 inset;
+        border: none;
+        outline: none;
+        border-radius: 10rem;
+        font-size: 1.5rem;
+        text-wrap: nowrap;
+        margin: 1rem;
+        padding: .5rem 1rem;
+        position: absolute;
+        top: 10vh;
+        right: 59vw;
+        width: 12rem;
         color: inherit;
     }
 
