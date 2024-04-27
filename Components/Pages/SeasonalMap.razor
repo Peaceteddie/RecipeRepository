@@ -9,7 +9,9 @@
         @foreach (var season in seasonalIngredients.GroupBy(x => x.Season))
         {
             <section class="@((season.Key == currentSeason  ? "active-" : "")+season.Key.ToString().ToLower())">
-                <h4>@season.Key</h4>
+                <NavLink href="@($"/seasonal-recipes/{season.Key.ToString().ToLower()}")">
+                    <h4>@season.Key</h4>
+                </NavLink>
                 <div class="seasonal-ingredients">
                     @foreach (var ingredient in season)
                     {

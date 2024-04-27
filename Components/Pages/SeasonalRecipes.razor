@@ -1,51 +1,47 @@
 @page "/seasonal-recipes/{season?}"
 @using Microsoft.EntityFrameworkCore;
-
 @if (Season != null)
 {
-    <h3>Seasonal Recipes@($" for {Season}")</h3>
+            <h3>Seasonal Recipes@($" for {Season}")</h3>
 }
 else
 {
-    <h3>Seasonal Recipes</h3>
+            <h3>Seasonal Recipes</h3>
 }
-
 @if (Recipes.Any())
 {
-    <table>
-        <thead>
-            <tr>
-                <th>Name</th>
-                <th>Matching Ingredient(s)</th>
-            </tr>
-        </thead>
-        <tbody>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Matching Ingredient(s)</th>
+                    </tr>
+                </thead>
+                <tbody>
             @foreach (var recipe in Recipes)
             {
                 var matchingIngredients = recipe.Ingredients
                 .Where(i => i.Name != null && seasonals.Any(s => s.Name == i.Name))
                 .ToList();
-
-                <tr>
-                    <td>@recipe.Name</td>
-                    <td>
-                        <ul>
+                                <tr>
+                                    <td>@recipe.Name</td>
+                                    <td>
+                                        <ul>
                             @foreach (var ingredient in matchingIngredients)
                             {
-                                <li>@ingredient.Name</li>
+                                                        <li>@ingredient.Name</li>
                             }
-                        </ul>
-                    </td>
-                </tr>
+                                        </ul>
+                                    </td>
+                                </tr>
             }
-        </tbody>
-    </table>
+                </tbody>
+            </table>
 }
 else
 {
-    <p>No seasonal recipes found.</p>
+            <p>No seasonal recipes found.</p>
 }
-
 @code {
     [Parameter] public string? season { get; set; }
     Season? Season => Enum.TryParse<Season>(season, true, out var result) ? result : null;
