@@ -56,6 +56,7 @@ else
                         <li class="input-group">
                             <div>
                                 <label for="i-quantity">Quantity</label>
+                                using Microsoft.EntityFrameworkCore;
                                 <InputNumber class="form-control i-quantity" id="i-quantity" @bind-Value="ingredient.Quantity" />
                             </div>
                             <div>
@@ -110,25 +111,19 @@ else
 
 @code {
     [JSInvokable]
-    public static async Task DisposeImage(string imagePath)
+    public static async Task DisposeImage(string originalName) =>
+    await Task.Run(() =>
     {
-        await Task.Run(() =>
+        using var context = new RecipeDbContext();
+        var image = context.RecipeImages.FirstOrDefault(i => i.OriginalName == originalName);
+        if (image is not null)
         {
-            if (imagePath is not null)
-            {
-                var context = new RecipeDbContext();
-                var filename = Path.GetFileName(imagePath);
-                var dbEntry = context.RecipeImages.FirstOrDefault(i => i.OriginalName == filename);
-                if (dbEntry is not null)
-                {
-                    context.RecipeImages.Remove(dbEntry);
-                    context.SaveChanges();
-                    var imageFile = $"wwwroot/{dbEntry.Path}";
-                    File.Delete(imageFile);
-                }
-            }
-        });
-    }
+            var imageFile = $"wwwroot/{image.Path}";
+            File.Delete(imageFile);
+            context.RecipeImages.Remove(image);
+            context.SaveChanges();
+        }
+    });
 
     [SupplyParameterFromForm] Recipe Recipe { get; set; } = new();
 
@@ -157,12 +152,13 @@ else
         }
         else TooLarge = false;
 
-        await using FileStream writeStream = new($"wwwroot/{path}", FileMode.Create);
-        await using Stream readStream = file.OpenReadStream();
+        await using var readStream = file.OpenReadStream(maxFileSize);
+        await using var writeStream = new FileStream($"wwwroot{path}", FileMode.Create, FileAccess.Write);
 
         var bytesRead = 0;
         var totalRead = 0;
         var buffer = new byte[1024 * 10];
+
         while ((bytesRead = await readStream.ReadAsync(buffer)) != 0)
         {
             totalRead += bytesRead;
@@ -170,12 +166,17 @@ else
             progressPercent = Decimal.Divide(totalRead, file.Size);
             StateHasChanged();
         }
+
         Recipe.IsUploadInProgress = false;
-        Recipe.Image = new RecipeImage
+        using var context = new RecipeDbContext();
+        var image = new RecipeImage
             {
                 Path = path,
                 OriginalName = file.Name
             };
+        context.RecipeImages.Add(image);
+        context.SaveChanges();
+        Recipe.Image = image;
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)

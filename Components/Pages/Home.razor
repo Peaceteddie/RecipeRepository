@@ -13,6 +13,11 @@
     <NavLink class="btn btn-primary" href="/create-recipe">+</NavLink>
 </div>
 
+<button id="random-recipe" class="btn btn-primary"
+    @onclick="() => ShowDetails(recipes != null && recipes.Count > 0 ? recipes[new Random().Next(0, recipes.Count)] : null)">
+    Random
+</button>
+
 <div class="d-flex justify-content-center mb-5">
     <div id="search-container">
         <input class="bg-light m-3 px-3 search w-10" type="text" @bind-value="searchTerm" @oninput="UpdateFiltered"
@@ -74,6 +79,7 @@
         background: conic-gradient(#faa, #aaf, #afa, #faf, #faa) fixed;
         backdrop-filter: blur(50px);
         display: flex;
+        color: hsl(@(360 * 0.75)deg, 100%, 70%);
     }
 
     #create-button {
@@ -100,6 +106,23 @@
         height: 100%;
         width: 100%;
         padding: 0;
+        color: inherit;
+    }
+
+    #random-recipe {
+        background: var(--yellow-pastel);
+        box-shadow: 2px 5px 5px #ffca inset, -2px -5px 5px #0002 inset;
+        border: none;
+        outline: none;
+        border-radius: 10rem;
+        font-size: 1.5rem;
+        margin: 1rem;
+        padding: 0.5rem 1rem;
+        position: absolute;
+        top: 10vh;
+        right: 70vw;
+        width: 10rem;
+        color: inherit;
     }
 
     .recipe-container {
