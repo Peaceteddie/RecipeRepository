@@ -17,6 +17,7 @@ public class Recipe
     public List<string> Instructions { get; set; } = [];
     [Required]
     public RecipeImage? Image { get; set; } = new RecipeImage();
+    public int? ImageId { get; set; }
 
     [NotMapped]
     public bool IsUploadInProgress = false;

@@ -175,7 +175,7 @@ else
             };
         context.RecipeImages.Add(image);
         context.SaveChanges();
-        Recipe.Image = image;
+        Recipe.ImageId = image.Id;
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -190,7 +190,9 @@ else
     {
         if (Recipe is not null)
         {
-            var context = new RecipeDbContext();
+            using var context = new RecipeDbContext();
+            var image = context.RecipeImages.Find(Recipe.ImageId);
+            Recipe.Image = image;
             context.Recipes.Add(Recipe);
             context.SaveChanges();
             NavigationManager.NavigateTo("/", forceLoad: true);
