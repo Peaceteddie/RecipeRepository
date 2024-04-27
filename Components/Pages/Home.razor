@@ -65,9 +65,12 @@
             : recipes.Where(r => r!.Name!.Contains(searchTerm, StringComparison.OrdinalIgnoreCase)).ToList();
         }
     }
-    void ShowDetails(Recipe recipe)
+    void ShowDetails(Recipe? recipe)
     {
-        this.recipe = recipe;
+        if (recipe != null)
+        {
+            this.recipe = recipe;
+        }
     }
     void ClearRecipe() => recipe = null;
 }

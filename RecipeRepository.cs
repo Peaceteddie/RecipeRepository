@@ -5,6 +5,7 @@ public class RecipeDbContext : DbContext
     public DbSet<Recipe> Recipes { get; set; }
     public DbSet<Ingredient> Ingredients { get; set; }
     public DbSet<RecipeImage> RecipeImages { get; set; }
+    public DbSet<SeasonalIngredient> SeasonalIngredients { get; set; }
     public async Task<List<Recipe>> GetRecipesWithIngredients()
     => await Recipes.Include(r => r.Ingredients).Include(r => r.Image).ToListAsync();
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)

@@ -130,6 +130,66 @@ namespace RecipeRepository
 
             context.Recipes.AddRange(GenerateBulkRecipes());
 
+            List<SeasonalIngredient> seasonalIngredients = [];
+
+            List<KeyValuePair<string, Season>> vegetables = [
+            new KeyValuePair<string, Season>("Asparagus", Season.Spring),
+            new KeyValuePair<string, Season>("Artichoke", Season.Spring),
+            new KeyValuePair<string, Season>("Broccoli", Season.Spring),
+            new KeyValuePair<string, Season>("Cauliflower", Season.Spring),
+            new KeyValuePair<string, Season>("Spinach", Season.Spring),
+            new KeyValuePair<string, Season>("Zucchini", Season.Summer),
+            new KeyValuePair<string, Season>("Tomato", Season.Summer),
+            new KeyValuePair<string, Season>("Eggplant", Season.Summer),
+            new KeyValuePair<string, Season>("Bell Pepper", Season.Summer),
+            new KeyValuePair<string, Season>("Pumpkin", Season.Autumn),
+            new KeyValuePair<string, Season>("Sweet Potato", Season.Autumn),
+            new KeyValuePair<string, Season>("Brussels Sprout", Season.Autumn),
+            new KeyValuePair<string, Season>("Cabbage", Season.Autumn),
+            new KeyValuePair<string, Season>("Kale", Season.Autumn),
+            new KeyValuePair<string, Season>("Carrot", Season.Winter),
+            new KeyValuePair<string, Season>("Beetroot", Season.Winter),
+            new KeyValuePair<string, Season>("Turnip", Season.Winter),
+            new KeyValuePair<string, Season>("Leek", Season.Winter),
+            new KeyValuePair<string, Season>("Radish", Season.Winter)
+        ];
+
+            foreach (var vegetable in vegetables)
+            {
+                seasonalIngredients.Add(new SeasonalIngredient
+                {
+                    Name = vegetable.Key,
+                    Season = vegetable.Value,
+                    Image = $"/gen_images/seasonal_ingredients/{vegetable.Key}.png"
+                });
+            }
+
+            List<KeyValuePair<string, Season>> fruits = [
+            new KeyValuePair<string, Season>("Strawberry", Season.Spring),
+            new KeyValuePair<string, Season>("Cherry", Season.Spring),
+            new KeyValuePair<string, Season>("Apricot", Season.Spring),
+            new KeyValuePair<string, Season>("Peach", Season.Summer),
+            new KeyValuePair<string, Season>("Watermelon", Season.Summer),
+            new KeyValuePair<string, Season>("Apple", Season.Autumn),
+            new KeyValuePair<string, Season>("Pear", Season.Autumn),
+            new KeyValuePair<string, Season>("Grape", Season.Autumn),
+            new KeyValuePair<string, Season>("Orange", Season.Winter),
+            new KeyValuePair<string, Season>("Mandarin", Season.Winter),
+            new KeyValuePair<string, Season>("Pomegranate", Season.Winter)
+        ];
+
+            foreach (var fruit in fruits)
+            {
+                seasonalIngredients.Add(new SeasonalIngredient
+                {
+                    Name = fruit.Key,
+                    Season = fruit.Value,
+                    Image = $"/gen_images/seasonal_ingredients/{fruit.Key}.png"
+                });
+            }
+
+            context.SeasonalIngredients.AddRange(seasonalIngredients);
+
             context.SaveChanges();
 
             Console.WriteLine("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
