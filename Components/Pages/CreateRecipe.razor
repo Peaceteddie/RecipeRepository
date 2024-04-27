@@ -1,42 +1,9 @@
 @page "/create-recipe"
 @rendermode InteractiveServer
-@inject RecipeDbContext context
 @inject NavigationManager NavigationManager
 @inject IJSRuntime JSRuntime
 
 <PageTitle>Create Recipe</PageTitle>
-
-<style>
-    .page {
-        background: linear-gradient(-45deg, #ff0, #e0a);
-        min-height: 100vh;
-    }
-
-    .form {
-        display: flex;
-        flex-direction: column;
-        gap: 1rem;
-        justify-content: center;
-        margin: auto;
-        padding: 2rem;
-        width: 50%;
-    }
-
-    .validation-message {
-        color: #ffa;
-    }
-
-    button {
-        display: flex;
-        justify-content: center;
-        width: 100px;
-    }
-
-    label {
-        font-size: larger;
-        text-decoration: underline;
-    }
-</style>
 
 <script>
     window.registerUnloadEvent = function () {
@@ -137,7 +104,7 @@ else
             <button class="btn btn-info mx-5" type="button" @onclick="@(()=>Recipe.Instructions.Add(""))">+</button>
         </div>
 
-        <button class="align-self-end btn btn-primary me-5 mt-5" type="submit">Submit</button>
+        <button class="align-self-end btn btn-primary fixed-top" type="submit">Submit</button>
     </EditForm>
 }
 
@@ -150,7 +117,7 @@ else
             if (imagePath is not null)
             {
                 var context = new RecipeDbContext();
-                var filename = imagePath.Replace("C:\\fakepath\\", "");
+                var filename = Path.GetFileName(imagePath);
                 var dbEntry = context.RecipeImages.FirstOrDefault(i => i.OriginalName == filename);
                 if (dbEntry is not null)
                 {
@@ -178,9 +145,9 @@ else
         progressPercent = 0;
         Recipe.IsUploadInProgress = true;
 
-        string path = $@"/images/{Path.GetRandomFileName()}{Path.GetExtension(e.File.Name)}";
-
         IBrowserFile file = e.File;
+
+        string path = $@"/images/{Path.GetRandomFileName()}{Path.GetExtension(file.Name)}";
 
         if (file.Size > maxFileSize)
         {
@@ -191,7 +158,7 @@ else
         else TooLarge = false;
 
         await using FileStream writeStream = new($"wwwroot/{path}", FileMode.Create);
-        await using Stream readStream = file.OpenReadStream(maxFileSize);
+        await using Stream readStream = file.OpenReadStream();
 
         var bytesRead = 0;
         var totalRead = 0;
@@ -203,20 +170,14 @@ else
             progressPercent = Decimal.Divide(totalRead, file.Size);
             StateHasChanged();
         }
-
-        Recipe.Image.OriginalName = file.Name;
         Recipe.IsUploadInProgress = false;
-        Recipe.Image.Path = path;
+        Recipe.Image = new RecipeImage
+            {
+                Path = path,
+                OriginalName = file.Name
+            };
+    }
 
-        context.Add(new RecipeImage { OriginalName = file.Name, Path = path });
-        context.SaveChanges();
-    }
-    protected override void OnInitialized()
-    {
-        NavigationManager.LocationChanged += HandleLocationChanged;
-        void HandleLocationChanged(object? sender, LocationChangedEventArgs e)
-        => DeleteImage();
-    }
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender)
@@ -224,21 +185,77 @@ else
             await JSRuntime.InvokeVoidAsync("registerUnloadEvent");
         }
     }
+
     void Submit()
     {
         if (Recipe is not null)
         {
+            var context = new RecipeDbContext();
             context.Recipes.Add(Recipe);
             context.SaveChanges();
             NavigationManager.NavigateTo("/", forceLoad: true);
         }
     }
+
     void DeleteImage()
     {
-        if (Recipe.Image.Path is not null)
+        if (Recipe.Image?.Path is not null)
         {
-            File.Delete(Recipe.Image.Path);
-            Recipe.Image.Path = null;
+            var imageFile = $"wwwroot/{Recipe.Image.Path}";
+            File.Delete(imageFile);
+            Recipe.Image = null;
         }
     }
 }
+
+<style>
+    body {
+        background-attachment: fixed;
+        background-color: #faa;
+        background-blend-mode: overlay;
+        background-image: url("/images/svgs/cake.svg");
+        background-repeat: no-repeat;
+        background-position: center;
+        background-size: 55vh;
+        backdrop-filter: blur(5px);
+        min-height: 100vh;
+    }
+
+    .form {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+        justify-content: center;
+        margin: auto;
+        padding: 2rem;
+        width: 50%;
+    }
+
+    .validation-message {
+        color: #ffa;
+    }
+
+    button[type="submit"] {
+        background: #cffa;
+        border: none;
+        border-radius: 10rem;
+        box-shadow: 2px 5px 5px #cffa inset, -2px -5px 5px #0002 inset;
+        padding-block: .8rem;
+
+        justify-self: flex-end;
+        margin-right: max(30vw, 10%);
+        margin-top: 6vh;
+    }
+
+    button {
+        display: flex;
+        justify-content: center;
+        width: 100px;
+    }
+
+    label {
+        color: #000;
+        font-size: larger;
+        text-decoration: underline;
+    }
+</style>

@@ -1,0 +1,13 @@
+<svg width="200" height="200" xmlns="http://www.w3.org/2000/svg">
+    <rect width="150" height="60" x="25" y="120" />
+    <rect width="120" height="60" x="40" y="80" />
+    <rect width="80" height="60" x="60" y="50" />
+    <rect width="10" height="30" x="70" y="20" />
+    <rect width="10" height="30" x="87" y="20" />
+    <rect width="10" height="30" x="104" y="20" />
+    <rect width="10" height="30" x="120" y="20" />
+    <circle r="5" cx="75" cy="10" />
+    <circle r="5" cx="92" cy="10" />
+    <circle r="5" cx="109" cy="10" />
+    <circle r="5" cx="125" cy="10" />
+</svg>

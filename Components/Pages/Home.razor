@@ -9,6 +9,10 @@
 
 <h1 class="text-center">Recipes</h1>
 
+<div id="create-button">
+    <NavLink class="btn btn-primary" href="/create-recipe">+</NavLink>
+</div>
+
 <div class="d-flex justify-content-center mb-5">
     <div id="search-container">
         <input class="bg-light m-3 px-3 search w-10" type="text" @bind-value="searchTerm" @oninput="UpdateFiltered"
@@ -60,7 +64,6 @@
     {
         this.recipe = recipe;
     }
-
     void ClearRecipe() => recipe = null;
 }
 
@@ -73,47 +76,69 @@
         display: flex;
     }
 
+    #create-button {
+        display: flex;
+        height: 64px;
+        width: 64px;
+        left: 70vw;
+        position: absolute;
+        top: 10vh;
+        place-content: center;
+        place-items: center;
+    }
+
+    #create-button a {
+        background: var(--yellow-pastel);
+        box-shadow: 2px 5px 5px #ffca inset, -2px -5px 5px #0002 inset;
+        border: none;
+        outline: none;
+        border-radius: 10rem;
+        place-content: center;
+        place-items: center;
+        font-size: 2rem;
+        display: flex;
+        height: 100%;
+        width: 100%;
+        padding: 0;
+    }
+
     .recipe-container {
         align-content: flex-start;
         align-self: center;
         background: var(--yellow-pastel);
-        box-shadow: 0 10px 10px 8px #ffca inset, 0 -15px 15px #0002 inset;
+        box-shadow: 4px 10px 10px 8px #ffca inset, -4px -15px 15px #0002 inset;
         border-radius: 5rem;
         min-width: 50vw;
         padding: 2rem;
         resize: inline;
-        overflow:auto;
-
+        overflow: auto;
         height: 80vh;
         width: 60vw;
+    }
 
-        .recipe-container-inner {
-            background: #fffff8;
-            border-radius: 5rem;
-            box-shadow: var(--inner-shadow);
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            padding: 2rem;
+    .recipe-container-inner {
+        background: #fffff8;
+        border-radius: 5rem;
+        box-shadow: var(--inner-shadow);
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        padding: 2rem;
+        height: 100%;
+        width: 100%;
+    }
 
-            height: 100%;
-            width: 100%;
-
-
-            .recipe-inner-inner {
-                border-radius: 2rem;
-                display: flex;
-                flex-wrap: wrap;
-                gap: 2rem;
-                justify-content: center;
-                mask: linear-gradient(to bottom, transparent 0%, black 1%, black 95%, transparent 100%);
-                overflow: auto;
-                padding-block: 2rem;
-
-                height: 100%;
-                width: 100%;
-            }
-        }
+    .recipe-inner-inner {
+        border-radius: 2rem;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 2rem;
+        justify-content: center;
+        mask: linear-gradient(to bottom, transparent 0%, black 1%, black 95%, transparent 100%);
+        overflow: auto;
+        padding-block: 2rem;
+        height: 100%;
+        width: 100%;
     }
 
     .search {
@@ -127,7 +152,7 @@
     #search-container {
         background-color: var(--yellow-pastel);
         border-radius: 10rem;
-        box-shadow: 0 5px 5px #ffca inset, 0 -5px 5px #0002 inset;
+        box-shadow: 2px 5px 5px #ffca inset, -2px -5px 5px #0002 inset;
         display: flex;
         justify-content: center;
     }

@@ -9,7 +9,7 @@ namespace RecipeRepository
             context.Database.EnsureDeleted();
             context.Database.EnsureCreated();
 
-            var files = Directory.GetFiles("wwwroot/images");
+            var files = Directory.GetFiles("wwwroot/gen_images");
 
             var recipes = new[]
             {
@@ -34,7 +34,7 @@ namespace RecipeRepository
                             "Cook until golden brown",
                             "Serve with your favorite toppings"
                         ],
-                        Image = new RecipeImage() { Path = @"/images/first_image.jpeg", OriginalName = "pancakes.jpeg" }
+                        Image = new RecipeImage() { Path = @"/gen_images/first_image.jpeg", OriginalName = "pancakes.jpeg" }
                     },
                     new Recipe
                     {
@@ -58,7 +58,7 @@ namespace RecipeRepository
                             "Stir well to coat the spaghetti with the sauce",
                             "Serve hot with additional grated parmesan on top"
                         ],
-                        Image =  new RecipeImage() { Path = @"/images/second_image.jpeg", OriginalName = "spaghetti_carbonara.jpeg" }
+                        Image =  new RecipeImage() { Path = @"/gen_images/second_image.jpeg", OriginalName = "spaghetti_carbonara.jpeg" }
                     },
                     new Recipe
                     {
@@ -88,7 +88,7 @@ namespace RecipeRepository
                         "Remove the lamb leg and vegetables from the oven and let rest for 10 minutes",
                         "Slice the lamb leg and serve with the roasted vegetables"
                     ],
-                        Image = new RecipeImage() { Path = @"/images/third_image.jpeg", OriginalName = "roasted_lamb.jpeg"}
+                        Image = new RecipeImage() { Path = @"/gen_images/third_image.jpeg", OriginalName = "roasted_lamb.jpeg"}
                     }
                 };
 
@@ -119,7 +119,7 @@ namespace RecipeRepository
                             "Instruction 4",
                             "Instruction 5"
                         ],
-                        Image = new RecipeImage() { Path = "/images/" + Path.GetFileName(files[i % files.Length]), OriginalName = $"image_{i}.jpeg" }
+                        Image = new RecipeImage() { Path = "/gen_images/" + Path.GetFileName(files[i % files.Length]), OriginalName = $"image_{i}.jpeg" }
                     });
                 }
 
@@ -132,11 +132,11 @@ namespace RecipeRepository
 
             context.SaveChanges();
 
-            Console.WriteLine("");
-            Console.WriteLine("");
-            Console.WriteLine("SUCCESS: Database seeded with initial data");
-            Console.WriteLine("");
-            Console.WriteLine("");
+            Console.WriteLine("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+            Console.WriteLine("~~                                                          ~~");
+            Console.WriteLine("~~        SUCCESS: Database seeded with initial data        ~~");
+            Console.WriteLine("~~                                                          ~~");
+            Console.WriteLine("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
         }
     }
 }
