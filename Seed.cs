@@ -116,12 +116,9 @@ namespace RecipeRepository
         public static void Initialize()
         {
             using var context = new RecipeDbContext();
-
             context.Database.EnsureDeleted();
             context.Database.EnsureCreated();
-
             var files = Directory.GetFiles("wwwroot/gen_images");
-
             var recipes = new[]
             {
                     new Recipe
@@ -202,11 +199,9 @@ namespace RecipeRepository
                         Image = new RecipeImage() { Path = @"/gen_images/third_image.jpeg", OriginalName = "roasted_lamb.jpeg"}
                     }
                 };
-
             List<Recipe> GenerateBulkRecipes()
             {
                 var extra = new List<Recipe>();
-
                 foreach (int i in Enumerable.Range(1, 100))
                 {
                     extra.Add(new Recipe
@@ -226,19 +221,21 @@ namespace RecipeRepository
                             Path =
                             files[Faker.RandomNumber.Next(0, files.Length - 1)].Replace("wwwroot", ""),
                             OriginalName = Faker.Lorem.Words(1) + ".jpeg"
-                        }
+                        },
+                        Categories = [new() { Name = "Random" }],
+                        Tags = [new() { Name = "Random" }],
+                        Comments = [new() { Content = Faker.Lorem.Sentence() }],
+                        CookingComplexity = (CookingComplexity)Faker.RandomNumber.Next(0, 2),
+                        PreparationTime = TimeSpan.FromMinutes(Faker.RandomNumber.Next(5, 60)),
+                        CookingTime = TimeSpan.FromMinutes(Faker.RandomNumber.Next(5, 60)),
+                        Ratings = Enumerable.Range(1, Faker.RandomNumber.Next(1, 10)).Select(x => Faker.RandomNumber.Next(1, 5)).ToList()
                     });
                 }
-
                 return extra;
             }
-
             context.Recipes.AddRange(recipes);
-
             context.Recipes.AddRange(GenerateBulkRecipes());
-
             List<SeasonalIngredient> seasonalIngredients = [];
-
             List<KeyValuePair<string, Season>> vegetables = [
             new KeyValuePair<string, Season>("Asparagus", Season.Spring),
             new KeyValuePair<string, Season>("Artichoke", Season.Spring),
@@ -260,7 +257,6 @@ namespace RecipeRepository
             new KeyValuePair<string, Season>("Leek", Season.Winter),
             new KeyValuePair<string, Season>("Radish", Season.Winter)
         ];
-
             foreach (var vegetable in vegetables)
             {
                 seasonalIngredients.Add(new SeasonalIngredient
@@ -270,7 +266,6 @@ namespace RecipeRepository
                     Image = $"/gen_images/seasonal_ingredients/{vegetable.Key}.png"
                 });
             }
-
             List<KeyValuePair<string, Season>> fruits = [
             new KeyValuePair<string, Season>("Strawberry", Season.Spring),
             new KeyValuePair<string, Season>("Cherry", Season.Spring),
@@ -284,7 +279,6 @@ namespace RecipeRepository
             new KeyValuePair<string, Season>("Mandarin", Season.Winter),
             new KeyValuePair<string, Season>("Pomegranate", Season.Winter)
         ];
-
             foreach (var fruit in fruits)
             {
                 seasonalIngredients.Add(new SeasonalIngredient
@@ -294,11 +288,8 @@ namespace RecipeRepository
                     Image = $"/gen_images/seasonal_ingredients/{fruit.Key}.png"
                 });
             }
-
             context.SeasonalIngredients.AddRange(seasonalIngredients);
-
             context.SaveChanges();
-
             Console.WriteLine("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
             Console.WriteLine("~~                                                          ~~");
             Console.WriteLine("~~        SUCCESS: Database seeded with initial data        ~~");

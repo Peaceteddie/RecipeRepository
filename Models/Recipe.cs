@@ -10,7 +10,7 @@ public class Recipe
     public TimeSpan PreparationTime { get; set; }
     public TimeSpan CookingTime { get; set; }
     [Required] public string? Description { get; set; }
-    public List<int> CookingComplexity { get; set; } = [];
+    public CookingComplexity CookingComplexity { get; set; }
     public List<RecipeCategory> Categories { get; set; } = [];
     [Required] public List<Ingredient> Ingredients { get; set; } = [];
     [Required] public List<string> Instructions { get; set; } = [];
@@ -32,6 +32,13 @@ public class Recipe
                 [nameof(IsUploadInProgress)]);
         }
     }
+}
+
+public enum CookingComplexity
+{
+    Easy,
+    Medium,
+    Hard
 }
 
 public class Comment

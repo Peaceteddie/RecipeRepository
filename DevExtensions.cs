@@ -5,15 +5,16 @@ using System.Text.Json.Serialization;
 namespace RecipeRepository;
 public static class DevExtensions
 {
-    private static readonly JsonSerializerOptions _jsonOptions = new() { WriteIndented = true };
-    public static T Inspect<T>(this T obj)
-    {
-        var options = new JsonSerializerOptions
-        {
-            WriteIndented = true,
-            ReferenceHandler = ReferenceHandler.Preserve
-        };
+    public static void Inspect(this object obj) => obj.Inspect<object>();
 
+    static readonly JsonSerializerOptions options = new()
+    {
+        WriteIndented = true,
+        ReferenceHandler = ReferenceHandler.Preserve
+    };
+
+    static T Inspect<T>(this T obj)
+    {
         switch (obj)
         {
             case string stringValue:
