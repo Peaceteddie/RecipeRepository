@@ -2,45 +2,46 @@
 @using Microsoft.EntityFrameworkCore;
 @if (Season != null)
 {
-            <h3>Seasonal Recipes@($" for {Season}")</h3>
+    <h3>Seasonal Recipes@($" for {Season}")</h3>
 }
 else
 {
-            <h3>Seasonal Recipes</h3>
+    <h3>Seasonal Recipes</h3>
 }
 @if (Recipes.Any())
 {
-            <table>
-                <thead>
-                    <tr>
-                        <th>Name</th>
-                        <th>Matching Ingredient(s)</th>
-                    </tr>
-                </thead>
-                <tbody>
+    <table>
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Matching Ingredient(s)</th>
+            </tr>
+        </thead>
+        <tbody>
             @foreach (var recipe in Recipes)
             {
-                var matchingIngredients = recipe.Ingredients
-                .Where(i => i.Name != null && seasonals.Any(s => s.Name == i.Name))
-                .ToList();
-                                <tr>
-                                    <td>@recipe.Name</td>
-                                    <td>
-                                        <ul>
-                            @foreach (var ingredient in matchingIngredients)
+                <tr>
+                    <td>
+                        <a href="/recipes/@recipe.Id.ToString()">
+                            @recipe.Name
+                        </a>
+                    </td>
+                    <td>
+                        <ul>
+                            @foreach (var ingredient in recipe.Ingredients.Where(i => seasonals.Any(s => s.Name == i.Name)))
                             {
-                                                        <li>@ingredient.Name</li>
+                                <li>@ingredient.Name (@(seasonals.First(s => s.Name == ingredient.Name).Season))</li>
                             }
-                                        </ul>
-                                    </td>
-                                </tr>
+                        </ul>
+                    </td>
+                </tr>
             }
-                </tbody>
-            </table>
+        </tbody>
+    </table>
 }
 else
 {
-            <p>No seasonal recipes found.</p>
+    <p>No seasonal recipes found.</p>
 }
 @code {
     [Parameter] public string? season { get; set; }
@@ -49,14 +50,59 @@ else
     List<SeasonalIngredient> seasonals = new();
     protected override async Task OnInitializedAsync()
     {
-        using var context = new RecipeDbContext();
-        var allRecipes = await context.GetRecipesWithIngredients();
-        seasonals = await context.SeasonalIngredients.ToListAsync();
-        Recipes = allRecipes
-        .Where(recipe => recipe.Ingredients
-        .Any(ingredient => ingredient.Name != null && seasonals
-        .Any(s => s.Name == ingredient.Name) && seasonals
-        .First(s => s.Name == ingredient.Name).Season == Season))
-        .ToList();
+        if (season is not null)
+        {
+            using var dbContext = new RecipeDbContext();
+            Recipes = await dbContext.GetRecipesWithIngredients();
+            seasonals = await dbContext.SeasonalIngredients.ToListAsync();
+            seasonals = seasonals.Where(s => s.Season == Season).ToList();
+            Recipes = Recipes.Where(r => r.Ingredients.Any(i => seasonals.Any(s => s.Name == i.Name))).ToList();
+        }
     }
 }
+<style>
+    table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    th,
+    td {
+        border: 1px solid black;
+        padding: 8px;
+        text-align: left;
+    }
+
+    th {
+        background-color: #f2f2f2;
+    }
+
+    tr:nth-child(even) {
+        background-color: #eee;
+
+        &:hover {
+            background-color: #efe;
+        }
+    }
+
+    tr {
+        background-color: #fff;
+
+        &:hover {
+            background-color: #efe;
+        }
+    }
+
+    ul {
+        list-style-type: none;
+        padding: 0;
+    }
+
+    li {
+        display: inline;
+    }
+
+    li::before {
+        content: "🔹";
+    }
+</style>

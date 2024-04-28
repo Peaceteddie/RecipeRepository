@@ -2,6 +2,117 @@ namespace RecipeRepository
 {
     public static class Seed
     {
+        static readonly List<string> Ingredients = [
+"Flour",
+"Egg",
+"Milk",
+"Butter",
+"Sugar",
+"Salt",
+"Spaghetti",
+"Pancetta",
+"Parmesan",
+"Black Pepper",
+"Lamb leg",
+"Potatoes",
+"Carrots",
+"Zucchini",
+"Olive oil",
+"Garlic",
+"Rosemary",
+"Thyme",
+"Strawberry",
+"Cherry",
+"Apricot",
+"Peach",
+"Watermelon",
+"Apple",
+"Pear",
+"Grape",
+"Orange",
+"Mandarin",
+"Pomegranate",
+"Asparagus",
+"Artichoke",
+"Broccoli",
+"Cauliflower",
+"Spinach",
+"Tomato",
+"Eggplant",
+"Bell Pepper",
+"Pumpkin",
+"Sweet Potato",
+"Brussels Sprout",
+"Cabbage",
+"Kale",
+"Carrot",
+"Beetroot",
+"Turnip",
+"Leek",
+"Radish",
+"Onion",
+"Potato",
+"Celery",
+"Mushroom",
+"Lemon",
+"Lime",
+"Pineapple",
+"Banana",
+"Kiwi",
+"Melon",
+"Blueberry",
+"Raspberry",
+"Blackberry",
+"Cranberry",
+"Grapefruit",
+"Avocado",
+"Coconut",
+"Papaya",
+"Mango",
+"Passion Fruit",
+"Guava",
+"Lychee",
+"Fig",
+"Date",
+"Cantaloupe",
+"Honeydew Melon",
+"Tangerine",
+"Nectarine",
+"Plum",
+"Cherry Tomato",
+"Green Bean",
+"Pea",
+"Corn",
+"Cucumber",
+"Lettuce",
+"Arugula",
+"Romaine Lettuce",
+"Iceberg Lettuce",
+"Swiss Chard",
+"Collard Greens",
+"Fennel",
+"Yam",
+"Parsnip",
+"Rutabaga",
+"Squash",
+"Chili Pepper",
+"Olives",
+"Capers",
+"Pickles",
+"Sauerkraut",
+"Kimchi",
+"Ginger",
+"Turmeric",
+"Cilantro",
+"Parsley",
+"Basil",
+"Mint",
+"Dill",
+"Oregano",
+"Sage",
+"Chives",
+        ];
+        static readonly List<string> Instructions = Faker.Lorem.Sentences(5).ToList();
         public static void Initialize()
         {
             using var context = new RecipeDbContext();
@@ -100,26 +211,22 @@ namespace RecipeRepository
                 {
                     extra.Add(new Recipe
                     {
-                        Name = $"Recipe {i}",
-                        Description = $"Description {i}",
-                        Ingredients =
-                        [
-                            new Ingredient { Name = "Ingredient 1", Quantity = 100, Unit = IngredientUnit.Grams },
-                            new Ingredient { Name = "Ingredient 2", Quantity = 1, Unit = IngredientUnit.Whole },
-                            new Ingredient { Name = "Ingredient 3", Quantity = 200, Unit = IngredientUnit.Milliliters },
-                            new Ingredient { Name = "Ingredient 4", Quantity = 20, Unit = IngredientUnit.Grams },
-                            new Ingredient { Name = "Ingredient 5", Quantity = 10, Unit = IngredientUnit.Grams },
-                            new Ingredient { Name = "Ingredient 6", Quantity = 1, Unit = IngredientUnit.Pinch }
-                        ],
-                        Instructions =
-                        [
-                            "Instruction 1",
-                            "Instruction 2",
-                            "Instruction 3",
-                            "Instruction 4",
-                            "Instruction 5"
-                        ],
-                        Image = new RecipeImage() { Path = "/gen_images/" + Path.GetFileName(files[i % files.Length]), OriginalName = $"image_{i}.jpeg" }
+                        Name = Faker.Name.Prefix() + " " + Faker.Name.Last(),
+                        Description = Faker.Lorem.Paragraph(),
+                        //select 5 random ingredients
+                        Ingredients = Enumerable.Range(1, 5).Select(x => new Ingredient
+                        {
+                            Name = Ingredients[Faker.RandomNumber.Next(0, Ingredients.Count - 1)],
+                            Quantity = Faker.RandomNumber.Next(1, 1000),
+                            Unit = IngredientUnit.Grams
+                        }).ToList(),
+                        Instructions = Instructions,
+                        Image = new RecipeImage()
+                        {
+                            Path =
+                            files[Faker.RandomNumber.Next(0, files.Length - 1)].Replace("wwwroot", ""),
+                            OriginalName = Faker.Lorem.Words(1) + ".jpeg"
+                        }
                     });
                 }
 
