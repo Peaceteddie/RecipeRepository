@@ -53,10 +53,16 @@ else
         if (season is not null)
         {
             using var dbContext = new RecipeDbContext();
-            Recipes = await dbContext.GetRecipesWithIngredients();
-            seasonals = await dbContext.SeasonalIngredients.ToListAsync();
-            seasonals = seasonals.Where(s => s.Season == Season).ToList();
-            Recipes = Recipes.Where(r => r.Ingredients.Any(i => seasonals.Any(s => s.Name == i.Name))).ToList();
+
+            seasonals = await
+            dbContext.SeasonalIngredients
+            .Where(s => s.Season == Season)
+            .ToListAsync();
+
+            Recipes = await
+            dbContext.Recipes
+            .Include(r => r.Ingredients)
+            .ToListAsync();
         }
     }
 }

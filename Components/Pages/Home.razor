@@ -57,8 +57,11 @@
     List<Recipe>? filteredRecipes { get; set; }
     protected override async Task OnInitializedAsync()
     {
-        recipes = await context.GetRecipesWithIngredients();
-        recipe = id.HasValue ? recipes.FirstOrDefault(r => r.Id == id) : null;
+        recipes = await context.Recipes
+        .Include(r => r.Ingredients)
+        .Include(r => r.Image)
+        .ToListAsync();
+        filteredRecipes = recipes;
     }
     void UpdateFiltered(ChangeEventArgs e)
     {
@@ -70,13 +73,7 @@
             : recipes.Where(r => r!.Name!.Contains(searchTerm, StringComparison.OrdinalIgnoreCase)).ToList();
         }
     }
-    void ShowDetails(Recipe? recipe)
-    {
-        if (recipe != null)
-        {
-            this.recipe = recipe;
-        }
-    }
+    void ShowDetails(Recipe? recipe) => this.recipe = recipe;
     void ClearRecipe() => recipe = null;
 }
 
