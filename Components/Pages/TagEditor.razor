@@ -1,0 +1,75 @@
+@page "/tags/{id:int?}"
+@rendermode InteractiveServer
+@using Microsoft.EntityFrameworkCore
+
+@if (tag is not null)
+{
+    <h1>@(isEdit ? "Edit" : "Add") Tag</h1>
+    <div class="form-group">
+        <label for="name">Name</label>
+        <input type="text" class="form-control" id="name" @bind="tag.Name" />
+    </div>
+    <button class="btn btn-primary" @onclick="SaveTag">Save</button>
+}
+else if (tags is not null)
+{
+    <div class="align-items-center d-flex flex-column ">
+        <h1>Tags</h1>
+        <div class="col-3 d-flex">
+            <input type="text" class="form-control" @bind-value="tempTag.Name" />
+            <button class="btn btn-primary" @onclick="async () =>
+        {
+            using RecipeDbContext Context = new();
+            RecipeTag newTag = new() { Name = tempTag.Name };
+            _ = Context.RecipeTags.Add(newTag);
+            await Context.SaveChangesAsync();
+            tags.Add(newTag);
+            StateHasChanged();
+        }">Add</button>
+        </div>
+    </div>
+    <div class="d-flex flex-wrap justify-content-center">
+        @foreach (RecipeTag tag in tags)
+        {
+            <TagPill Key="@tag.Id" Tag="tag" class="d-flex" OnDelete="async () =>
+        {
+            using RecipeDbContext Context = new();
+            Context.RecipeTags.Remove(tag.Inspect());
+            await Context.SaveChangesAsync();
+            tags.Remove(tag);
+            StateHasChanged();
+        }" />
+        }
+    </div>
+}
+
+@code {
+    [Parameter] public int? Id { get; set; }
+    List<RecipeTag>? tags { get; set; }
+    RecipeTag? tag { get; set; }
+
+    bool isEdit = false;
+    RecipeTag tempTag = new();
+    protected override async Task OnInitializedAsync()
+    {
+        using RecipeDbContext Context = new();
+        tags = await Context.RecipeTags.ToListAsync();
+        tag = Id.HasValue ? await Context.RecipeTags.FindAsync(Id) : null;
+        isEdit = (tag != null);
+    }
+    protected override async Task OnParametersSetAsync()
+    {
+        using RecipeDbContext Context = new();
+        tag = Id.HasValue ? await Context.RecipeTags.FindAsync(Id) : null;
+        isEdit = (tag != null);
+    }
+    async Task SaveTag()
+    {
+        if (tag is null) return;
+        using RecipeDbContext Context = new();
+        _ = isEdit ? Context.RecipeTags.Update(tag) : Context.RecipeTags.Add(tag);
+        await Context.SaveChangesAsync();
+    @inject NavigationManager NavigationManager
+        NavigationManager.NavigateTo("/tags");
+    }
+}

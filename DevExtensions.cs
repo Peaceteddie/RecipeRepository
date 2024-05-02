@@ -5,15 +5,13 @@ using System.Text.Json.Serialization;
 namespace RecipeRepository;
 public static class DevExtensions
 {
-    public static void Inspect(this object obj) => obj.Inspect<object>();
-
     static readonly JsonSerializerOptions options = new()
     {
         WriteIndented = true,
         ReferenceHandler = ReferenceHandler.Preserve
     };
 
-    static T Inspect<T>(this T obj)
+    public static T Inspect<T>(this T obj)
     {
         switch (obj)
         {
@@ -29,6 +27,6 @@ public static class DevExtensions
                 break;
         }
 
-        return obj;
+        return (T)obj;
     }
 }

@@ -1,0 +1,106 @@
+@using Microsoft.AspNetCore.Components
+@using System
+
+@code {
+    string tagPillClasses = "";
+    string tagPillStyles = "";
+    string tagPillTextColor = "";
+    string tagPillBackgroundColor = "";
+
+    string randomColor()
+    {
+        Random random = new Random();
+        int r = random.Next(128, 250);
+        int g = random.Next(128, 250);
+        int b = random.Next(128, 250);
+        return $"#{r:X2}{g:X2}{b:X2}";
+    }
+    void SetColors()
+    {
+        tagPillBackgroundColor = randomColor();
+        int r = Convert.ToInt32(tagPillBackgroundColor.Substring(1, 2), 16);
+        int g = Convert.ToInt32(tagPillBackgroundColor.Substring(3, 2), 16);
+        int b = Convert.ToInt32(tagPillBackgroundColor.Substring(5, 2), 16);
+
+        double rNormalized = r / 255.0;
+        double gNormalized = g / 255.0;
+        double bNormalized = b / 255.0;
+
+        double luminance = 0.299 * rNormalized + 0.587 * gNormalized + 0.114 * bNormalized;
+
+        tagPillTextColor = luminance < 0.7 ? "#fff" : "#444";
+    }
+    string GetStyles() => $"color: {tagPillTextColor}; background-color: {tagPillBackgroundColor};";
+    Task OnParametersSetAsync(Dictionary<string, object> InputAttributes)
+    {
+        if (InputAttributes != null)
+        {
+            if (InputAttributes.TryGetValue("class", out var classes))
+            {
+                tagPillClasses += classes?.ToString() ?? "";
+                InputAttributes.Remove("class");
+            }
+
+            if (InputAttributes.TryGetValue("style", out var styles))
+            {
+                tagPillStyles = GetStyles();
+                tagPillStyles += styles?.ToString() ?? "";
+                InputAttributes.Remove("style");
+            }
+        }
+        return Task.CompletedTask;
+    }
+}
+
+@if (Tag is not null)
+{
+    <div @attributes="InputAttributes" class="@tagPillClasses" style="@tagPillStyles">
+        <strong class="overflow-x-auto">@Tag.Name</strong>
+        <button class=" delete-button" @onclick="OnDeleteClicked">X</button>
+    </div>
+}
+
+@code {
+    [Parameter] public RecipeTag? Tag { get; set; }
+    [Parameter] public EventCallback OnDelete { get; set; }
+    [Parameter(CaptureUnmatchedValues = true)] public Dictionary<string, object>? InputAttributes { get; set; }
+    protected override Task OnInitializedAsync()
+    {
+        SetColors();
+
+        tagPillClasses = "tag-pill ";
+        tagPillClasses += InputAttributes?.ContainsKey("class") == true
+        ? InputAttributes["class"].ToString()
+        : "";
+
+        tagPillStyles = GetStyles();
+        tagPillStyles += InputAttributes?.ContainsKey("style") == true
+        ? InputAttributes["style"].ToString()
+        : "";
+
+        return Task.CompletedTask;
+    }
+    async Task OnDeleteClicked() =>
+    await OnDelete.InvokeAsync();
+}
+
+<style>
+    .tag-pill {
+        display: inline-flex;
+        align-items: center;
+        padding: 0.5rem 1rem;
+        border-radius: 1rem;
+        margin: 0.5rem;
+
+        max-width: 10rem;
+        width: fit-content;
+    }
+
+    .delete-button {
+        background-color: transparent;
+        border: none;
+        color: #444;
+        font-size: 1rem;
+        cursor: pointer;
+    }
+</style>
