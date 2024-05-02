@@ -1,14 +1,11 @@
-@page "/seasonal-recipes/{season?}"
+@page "/seasonal-recipes/{season}"
 @using Microsoft.EntityFrameworkCore;
-@if (Season != null)
+
+@if (season is not null)
 {
-    <h3>Seasonal Recipes@($" for {Season}")</h3>
+    <h1>@Season.ToString() Recipes</h1>
 }
-else
-{
-    <h3>Seasonal Recipes</h3>
-}
-@if (Recipes.Any())
+@if (Recipes.Any(r => r.Ingredients.Any(i => Seasonals.Any(si => si.Name == i.Name))))
 {
     <table>
         <thead>
@@ -27,10 +24,12 @@ else
                         </a>
                     </td>
                     <td>
-                        <ul>
-                            @foreach (var ingredient in recipe.Ingredients.Where(i => seasonals.Any(s => s.Name == i.Name)))
+                        <ul class="d-flex flex-row">
+                            @foreach (var ingredient in recipe.Ingredients.Where(i => Seasonals.Any(si => si.Name == i.Name)))
                             {
-                                <li>@ingredient.Name (@(seasonals.First(s => s.Name == ingredient.Name).Season))</li>
+                                <li class="d-flex flex-row">
+                                    @ingredient.Name
+                                </li>
                             }
                         </ul>
                     </td>
@@ -47,25 +46,28 @@ else
     [Parameter] public string? season { get; set; }
     Season? Season => Enum.TryParse<Season>(season, true, out var result) ? result : null;
     List<Recipe> Recipes { get; set; } = new();
-    List<SeasonalIngredient> seasonals = new();
+    List<SeasonalIngredient> Seasonals = new();
     protected override async Task OnInitializedAsync()
     {
         if (season is not null)
         {
             using var dbContext = new RecipeDbContext();
 
-            seasonals = await
-            dbContext.SeasonalIngredients
-            .Where(s => s.Season == Season)
+            Seasonals = await dbContext.SeasonalIngredients
+            .Where(si => si.Season == Season)
             .ToListAsync();
 
-            Recipes = await
-            dbContext.Recipes
+            Recipes = await dbContext.Recipes
             .Include(r => r.Ingredients)
             .ToListAsync();
+
+            Recipes = Recipes
+            .Where(r => r.Ingredients.Any(i => Seasonals.Any(si => si.Name == i.Name)))
+            .ToList();
         }
     }
 }
+
 <style>
     table {
         width: 100%;
