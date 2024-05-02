@@ -25,7 +25,7 @@
                     </td>
                     <td>
                         <ul class="d-flex flex-row">
-                            @foreach (var ingredient in recipe.Ingredients.Where(i => Seasonals.Any(si => si.Name == i.Name)))
+                            @foreach (var ingredient in recipe.Ingredients.Where(i => Seasonals.Any(si => si.Name == i.Name)).OrderBy(i => i.Name))
                             {
                                 <li class="d-flex flex-row">
                                     @ingredient.Name
