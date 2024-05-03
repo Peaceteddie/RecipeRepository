@@ -4,15 +4,11 @@
         <h2 class="recipe-title">@Recipe?.Name</h2>
     </div>
 </button>
-
 @code {
     [Parameter] public Recipe? Recipe { get; set; }
-
     [Parameter] public EventCallback<Recipe> CardClicked { get; set; }
-
     void OnCardClick() => CardClicked.InvokeAsync(Recipe);
 }
-
 <style>
     .recipe-card {
         background: transparent;

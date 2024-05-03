@@ -19,7 +19,7 @@
             placeholder="Search..." />
     </div>
 </div>
-<RecipeCardList searchTerm="@searchTerm" />
+<RecipeCardList searchTerm="@searchTerm" OnClickCallback="@((Recipe recipe)=>ShowDetails(recipe))" />
 @code {
     [Parameter] public int? id { get; set; }
     string? searchTerm { get; set; }

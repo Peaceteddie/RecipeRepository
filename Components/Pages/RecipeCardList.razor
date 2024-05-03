@@ -7,7 +7,7 @@
             {
                 foreach (var recipe in filteredRecipes ?? recipes ?? [])
                 {
-                    <RecipeCard Recipe="@recipe" CardClicked="() => ShowDetails(recipe)" />
+                    <RecipeCard Recipe="@recipe" CardClicked="@(() => ShowDetails(recipe))" />
                 }
             }
             else
@@ -19,6 +19,7 @@
 </div>
 @code
 {
+#pragma warning disable BL0007
     [Parameter]
     public string? searchTerm
     {
@@ -29,6 +30,7 @@
             UpdateFiltered();
         }
     }
+    [Parameter] public EventCallback<Recipe> OnClickCallback { get; set; }
     string? _searchTerm;
     List<Recipe>? filteredRecipes { get; set; }
     List<Recipe>? recipes { get; set; }
@@ -39,7 +41,6 @@
         .Include(r => r.Ingredients)
         .Include(r => r.Image)
         .ToList();
-        filteredRecipes = recipes;
     }
     void UpdateFiltered()
     {
@@ -53,8 +54,5 @@
         .ToList();
     }
     void ShowDetails(Recipe recipe)
-    {
-    @inject NavigationManager NavigationManager
-        NavigationManager.NavigateTo($"/recipe/{recipe.Id}");
-    }
+    => OnClickCallback.InvokeAsync(recipe);
 }

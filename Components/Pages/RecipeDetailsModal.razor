@@ -9,6 +9,12 @@
                             @Recipe.Name
                         </a>
                     </h5>
+                    <div>
+                        @foreach (var tag in Recipe.Tags)
+                        {
+                            <TagPill Tag="tag" />
+                        }
+                    </div>
                     <button type=" button" class="btn-close" @onclick="Hide"></button>
                 </div>
                 <div class="d-flex flex-row gap-5 modal-body">
@@ -42,8 +48,8 @@
     </div>
 }
 @code {
-    [Parameter]    public Recipe? Recipe { get; set; }
-    [Parameter]    public EventCallback Callback { get; set; }
+    [Parameter] public Recipe? Recipe { get; set; }
+    [Parameter] public EventCallback Callback { get; set; }
     bool IsVisible { get; set; }
     string show => IsVisible ? "d-block" : "";
     protected override void OnParametersSet()
