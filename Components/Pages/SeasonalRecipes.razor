@@ -1,6 +1,5 @@
 @page "/seasonal-recipes/{season}"
 @using Microsoft.EntityFrameworkCore;
-
 @if (season is not null)
 {
     <h1>@Season.ToString() Recipes</h1>
@@ -52,64 +51,51 @@ else
         if (season is not null)
         {
             using var dbContext = new RecipeDbContext();
-
             Seasonals = await dbContext.SeasonalIngredients
             .Where(si => si.Season == Season)
             .ToListAsync();
-
             Recipes = await dbContext.Recipes
             .Include(r => r.Ingredients)
             .ToListAsync();
-
             Recipes = Recipes
             .Where(r => r.Ingredients.Any(i => Seasonals.Any(si => si.Name == i.Name)))
             .ToList();
         }
     }
 }
-
 <style>
     table {
         width: 100%;
         border-collapse: collapse;
     }
-
     th,
     td {
         border: 1px solid black;
         padding: 8px;
         text-align: left;
     }
-
     th {
         background-color: #f2f2f2;
     }
-
     tr:nth-child(even) {
         background-color: #eee;
-
         &:hover {
             background-color: #efe;
         }
     }
-
     tr {
         background-color: #fff;
-
         &:hover {
             background-color: #efe;
         }
     }
-
     ul {
         list-style-type: none;
         padding: 0;
     }
-
     li {
         display: inline;
     }
-
     li::before {
         content: "🔹";
     }

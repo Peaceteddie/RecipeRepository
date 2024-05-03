@@ -1,8 +1,6 @@
 @page "/seasonal-map"
 @using Microsoft.EntityFrameworkCore;
-
 <h3>Seasonal Map</h3>
-
 <div class="seasonal-map">
     @if (seasonalIngredients != null)
     {
@@ -22,7 +20,6 @@
         }
     }
 </div>
-
 <script>
     window.addEventListener('DOMContentLoaded', () => {
         var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
@@ -31,35 +28,29 @@
         });
     });
 </script>
-
 <style>
     h4 {
         color: hsl(0, 0%, 30%);
         padding: .5rem;
     }
-
     .seasonal-map {
         display: grid;
         grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
         gap: 1rem;
     }
-
     .seasonal-map img {
         width: 100%;
         height: auto;
     }
-
     .seasonal-ingredients {
         display: grid;
         grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
         gap: 1rem;
     }
-
     .active-spring {
         background-color: hsl(120, 100%, 90%);
         border-radius: 2rem;
         padding: 2rem;
-
         h4 {
             background-color: hsl(300, 100%, 85%);
             border-radius: 2rem;
@@ -68,12 +59,10 @@
             padding-inline: 1rem;
         }
     }
-
     .active-summer {
         background-color: hsl(60, 100%, 90%);
         border-radius: 2rem;
         padding: 2rem;
-
         h4 {
             background-color: hsl(240, 100%, 85%);
             border-radius: 2rem;
@@ -82,12 +71,10 @@
             padding-inline: 1rem;
         }
     }
-
     .active-autumn {
         background-color: hsl(30, 100%, 90%);
         border-radius: 2rem;
         padding: 2rem;
-
         h4 {
             background-color: hsl(150, 100%, 85%);
             border-radius: 2rem;
@@ -96,12 +83,10 @@
             padding-inline: 1rem;
         }
     }
-
     .active-winter {
         background-color: hsl(200, 100%, 90%);
         border-radius: 2rem;
         padding: 2rem;
-
         h4 {
             background-color: hsl(0, 100%, 85%);
             border-radius: 2rem;
@@ -110,35 +95,29 @@
             padding-inline: 1rem;
         }
     }
-
     .spring {
         background-color: hsl(120, 100%, 90%);
         border-radius: 2rem;
         padding: 2rem;
     }
-
     .summer {
         background-color: hsl(60, 100%, 90%);
         border-radius: 2rem;
         padding: 2rem;
     }
-
     .autumn {
         background-color: hsl(30, 100%, 90%);
         border-radius: 2rem;
         padding: 2rem;
     }
-
     .winter {
         background-color: hsl(200, 100%, 90%);
         border-radius: 2rem;
         padding: 2rem;
     }
 </style>
-
 @code {
     List<SeasonalIngredient>? seasonalIngredients { get; set; }
-
     Season currentSeason = DateTime.Now.Month switch
     {
         12 or 1 or 2 => Season.Winter,
@@ -147,7 +126,6 @@
         9 or 10 or 11 => Season.Autumn,
         _ => Season.Spring
     };
-
     protected override async Task OnInitializedAsync()
     {
         var dbContext = new RecipeDbContext();

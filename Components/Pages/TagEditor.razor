@@ -1,7 +1,6 @@
 @page "/tags/{id:int?}"
 @rendermode InteractiveServer
 @using Microsoft.EntityFrameworkCore
-
 @if (tag is not null)
 {
     <h1>@(isEdit ? "Edit" : "Add") Tag</h1>
@@ -42,12 +41,10 @@ else if (tags is not null)
         }
     </div>
 }
-
 @code {
     [Parameter] public int? Id { get; set; }
     List<RecipeTag>? tags { get; set; }
     RecipeTag? tag { get; set; }
-
     bool isEdit = false;
     RecipeTag tempTag = new();
     protected override async Task OnInitializedAsync()

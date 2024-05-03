@@ -1,6 +1,6 @@
 @if (Recipe is not null && IsVisible)
 {
-    <div class="d-block modal" @onclick="() => Hide()">
+    <div @attributes="AdditionalAttributes" class="d-block modal" @onclick="() => Hide()">
         <div class="modal-dialog modal-dialog-centered modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
@@ -9,10 +9,10 @@
                             @Recipe.Name
                         </a>
                     </h5>
-                    <div>
+                    <div class="tag-list">
                         @foreach (var tag in Recipe.Tags)
                         {
-                            <TagPill Tag="tag" />
+                            <TagPill Tag="tag" NoDelete />
                         }
                     </div>
                     <button type=" button" class="btn-close" @onclick="Hide"></button>
@@ -50,6 +50,7 @@
 @code {
     [Parameter] public Recipe? Recipe { get; set; }
     [Parameter] public EventCallback Callback { get; set; }
+    [Parameter(CaptureUnmatchedValues = true)] public Dictionary<string, object>? AdditionalAttributes { get; set; }
     bool IsVisible { get; set; }
     string show => IsVisible ? "d-block" : "";
     protected override void OnParametersSet()
@@ -70,8 +71,15 @@
     }
 }
 <style>
+    .modal-header{
+        padding-block:0;
+    }
     .recipe-image {
         max-width: 100%;
         max-height: 100%;
+    }
+    .tag-list {
+        align-content: center;
+        height: 4rem;
     }
 </style>

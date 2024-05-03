@@ -1,12 +1,10 @@
 @using Microsoft.AspNetCore.Components
 @using System
-
 @code {
     string tagPillClasses = "";
     string tagPillStyles = "";
     string tagPillTextColor = "";
     string tagPillBackgroundColor = "";
-
     string randomColor()
     {
         Random random = new Random();
@@ -21,13 +19,10 @@
         int r = Convert.ToInt32(tagPillBackgroundColor.Substring(1, 2), 16);
         int g = Convert.ToInt32(tagPillBackgroundColor.Substring(3, 2), 16);
         int b = Convert.ToInt32(tagPillBackgroundColor.Substring(5, 2), 16);
-
         double rNormalized = r / 255.0;
         double gNormalized = g / 255.0;
         double bNormalized = b / 255.0;
-
         double luminance = 0.299 * rNormalized + 0.587 * gNormalized + 0.114 * bNormalized;
-
         tagPillTextColor = luminance < 0.7 ? "#fff" : "#444";
     }
     string GetStyles() => $"color: {tagPillTextColor}; background-color: {tagPillBackgroundColor};";
@@ -40,7 +35,6 @@
                 tagPillClasses += classes?.ToString() ?? "";
                 InputAttributes.Remove("class");
             }
-
             if (InputAttributes.TryGetValue("style", out var styles))
             {
                 tagPillStyles = GetStyles();
@@ -51,47 +45,44 @@
         return Task.CompletedTask;
     }
 }
-
 @if (Tag is not null)
 {
     <div @attributes="InputAttributes" class="@tagPillClasses" style="@tagPillStyles">
         <strong class="overflow-x-auto">@Tag.Name</strong>
-        <button class=" delete-button" @onclick="OnDeleteClicked">X</button>
+        @if (!NoDelete)
+        {
+            <button class="delete-button" @onclick="OnDeleteClicked">X</button>
+        }
     </div>
 }
-
 @code {
+    [Parameter] public bool NoDelete { get; set; }
     [Parameter] public RecipeTag? Tag { get; set; }
     [Parameter] public EventCallback OnDelete { get; set; }
     [Parameter(CaptureUnmatchedValues = true)] public Dictionary<string, object>? InputAttributes { get; set; }
     protected override Task OnInitializedAsync()
     {
         SetColors();
-
         tagPillClasses = "tag-pill ";
         tagPillClasses += InputAttributes?.ContainsKey("class") == true
         ? InputAttributes["class"].ToString()
         : "";
-
         tagPillStyles = GetStyles();
         tagPillStyles += InputAttributes?.ContainsKey("style") == true
         ? InputAttributes["style"].ToString()
         : "";
-
         return Task.CompletedTask;
     }
     async Task OnDeleteClicked() =>
     await OnDelete.InvokeAsync();
 }
-
 <style>
     .tag-pill {
         display: inline-flex;
         align-items: center;
-        padding: 0.5rem 1rem;
+        padding: .25rem 1rem;
         border-radius: 1rem;
         margin: 0.5rem;
-
         max-width: 10rem;
         width: fit-content;
     }

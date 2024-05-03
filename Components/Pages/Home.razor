@@ -4,20 +4,21 @@
 @inject RecipeDbContext context;
 @inject NavigationManager NavigationalManager;
 <PageTitle>Recipes</PageTitle>
-<RecipeDetailsModal Recipe="recipe" Callback="ClearRecipe" />
+<RecipeDetailsModal Recipe="recipe" Callback="ClearRecipe"
+    style="position:absolute;top:50vh;left:50vw;transform:translate(-50%,-50%)" />
 <h1 class="text-center">Recipes</h1>
-<div id="create-button">
-    <NavLink class="btn btn-primary" href="/create-recipe">+</NavLink>
-</div>
-<button id="random-recipe" class="btn btn-primary">
-    Random
-</button>
-<NavLink id="seasonal-map" class="btn btn-primary" href="/seasonal-map">Seasonal Map</NavLink>
-<div class="d-flex justify-content-center mb-5">
+<div class="button-list mx-5 px-5">
+    <div id="create-button">
+        <NavLink href="/create-recipe">+</NavLink>
+    </div>
+    <button id="random-recipe">
+        Random
+    </button>
     <div id="search-container">
         <input class="bg-light m-3 px-3 search w-10" type="text" @bind-value="searchTerm" @oninput="UpdateFiltered"
             placeholder="Search..." />
     </div>
+    <NavLink id="seasonal-map" href="/seasonal-map">Seasonal Map</NavLink>
 </div>
 <RecipeCardList searchTerm="@searchTerm" OnClickCallback="@((Recipe recipe)=>ShowDetails(recipe))" />
 @code {
@@ -42,89 +43,67 @@
     }
 
     #create-button {
-        display: flex;
-        height: 64px;
-        width: 64px;
-        left: 70vw;
-        position: absolute;
-        top: 10vh;
-        place-content: center;
-        place-items: center;
-    }
-
-    #create-button a {
-        background: var(--yellow-pastel);
-        box-shadow: 2px 5px 5px #ffca inset, -2px -5px 5px #0002 inset;
-        border: none;
-        outline: none;
+        background-color: var(--yellow-pastel);
         border-radius: 10rem;
+        box-shadow: 2px 5px 5px #ffca inset, -2px -5px 5px #0002 inset;
+        color: inherit;
+        display: flex;
+        font-size: 2rem;
+        height: 4rem;
+        padding-bottom: .2rem;
         place-content: center;
         place-items: center;
-        font-size: 2rem;
-        display: flex;
-        height: 100%;
-        width: 100%;
-        padding: 0;
-        color: inherit;
+        width: 4rem;
+
+        a {
+            color: inherit;
+            display: flex;
+            height: 100%;
+            place-content: center;
+            place-items: center;
+            text-decoration: none;
+            width: 100%;
+        }
     }
 
     #random-recipe {
-        background: var(--yellow-pastel);
-        box-shadow: 2px 5px 5px #ffca inset, -2px -5px 5px #0002 inset;
-        border: none;
-        outline: none;
+        background-color: var(--yellow-pastel);
         border-radius: 10rem;
-        font-size: 1.5rem;
-        margin: 1rem;
-        padding: 0.5rem 1rem;
-        position: absolute;
-        top: 10vh;
-        right: 70vw;
-        width: 10rem;
+        border: none;
+        box-shadow: 2px 5px 5px #ffca inset, -2px -5px 5px #0002 inset;
         color: inherit;
+        font-size: 2rem;
+        height: 4rem;
+        padding-bottom: .2rem;
+        padding-inline: 2rem;
+        width: fit-content;
+    }
+
+    #search-container {
+        background-color: var(--yellow-pastel);
+        border-radius: 10rem;
+        box-shadow: 2px 5px 5px #ffca inset, -2px -5px 5px #0002 inset;
     }
 
     #seasonal-map {
-        background: var(--yellow-pastel);
-        box-shadow: 2px 5px 5px #ffca inset, -2px -5px 5px #0002 inset;
-        border: none;
-        outline: none;
+        background-color: var(--yellow-pastel);
         border-radius: 10rem;
-        font-size: 1.5rem;
-        text-wrap: nowrap;
-        margin: 1rem;
-        padding: .5rem 1rem;
-        position: absolute;
-        top: 10vh;
-        right: 59vw;
-        width: 12rem;
+        box-shadow: 2px 5px 5px #ffca inset, -2px -5px 5px #0002 inset;
         color: inherit;
+        display: flex;
+        font-size: 2rem;
+        height: 4rem;
+        padding-inline: 2rem;
+        place-items: center;
+        text-decoration: none;
+        width: fit-content;
     }
 
-    .recipe-container {
-        align-content: flex-start;
-        align-self: center;
-        background: var(--yellow-pastel);
-        box-shadow: 4px 10px 10px 8px #ffca inset, -4px -15px 15px #0002 inset;
-        border-radius: 5rem;
-        min-width: 50vw;
-        padding: 2rem;
-        resize: inline;
-        overflow: auto;
-        height: 80vh;
-        width: 60vw;
-    }
-
-    .recipe-container-inner {
-        background: #fffff8;
-        border-radius: 5rem;
-        box-shadow: var(--inner-shadow);
+    .button-list {
         display: flex;
         flex-wrap: wrap;
-        justify-content: center;
-        padding: 2rem;
-        height: 100%;
-        width: 100%;
+        place-content: space-evenly;
+        place-items: center;
     }
 
     .recipe-inner-inner {
@@ -132,27 +111,21 @@
         display: flex;
         flex-wrap: wrap;
         gap: 2rem;
-        justify-content: center;
-        mask: linear-gradient(to bottom, transparent 0%, black 1%, black 95%, transparent 100%);
-        overflow: auto;
-        padding-block: 2rem;
         height: 100%;
+        justify-content: center;
+        padding-block: 2rem;
         width: 100%;
     }
 
     .search {
+        border-radius: 10rem;
         border: none;
-        border-radius: 10rem;
         box-shadow: var(--inner-shadow);
-        height: 40px;
-        font-size: 1.5rem;
-    }
-
-    #search-container {
-        background-color: var(--yellow-pastel);
-        border-radius: 10rem;
-        box-shadow: 2px 5px 5px #ffca inset, -2px -5px 5px #0002 inset;
         display: flex;
-        justify-content: center;
+        font-size: 1.5rem;
+        height: 40px;
+        place-content: center;
+        place-items: center;
+        place-self: center;
     }
 </style>
