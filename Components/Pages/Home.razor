@@ -1,82 +1,36 @@
 ﻿@page "/{id:int?}"
 @rendermode InteractiveServer
-
 @using Microsoft.EntityFrameworkCore
-
 @inject RecipeDbContext context;
 @inject NavigationManager NavigationalManager;
-
 <PageTitle>Recipes</PageTitle>
-
 <RecipeDetailsModal Recipe="recipe" Callback="ClearRecipe" />
-
 <h1 class="text-center">Recipes</h1>
-
 <div id="create-button">
     <NavLink class="btn btn-primary" href="/create-recipe">+</NavLink>
 </div>
-
-<button id="random-recipe" class="btn btn-primary"
-    @onclick="() => ShowDetails(recipes != null && recipes.Count > 0 ? recipes[new Random().Next(0, recipes.Count)] : null)">
+<button id="random-recipe" class="btn btn-primary">
     Random
 </button>
-
 <NavLink id="seasonal-map" class="btn btn-primary" href="/seasonal-map">Seasonal Map</NavLink>
-
 <div class="d-flex justify-content-center mb-5">
     <div id="search-container">
         <input class="bg-light m-3 px-3 search w-10" type="text" @bind-value="searchTerm" @oninput="UpdateFiltered"
             placeholder="Search..." />
     </div>
 </div>
-
-<div class="recipe-container">
-    <div class="recipe-container-inner">
-        <div class="recipe-inner-inner">
-            @if (filteredRecipes is not null || recipes is not null)
-            {
-                foreach (var recipe in filteredRecipes ?? recipes ?? [])
-                {
-                    <RecipeCard Recipe="@recipe" CardClicked="() => ShowDetails(recipe)" />
-                }
-            }
-            else
-            {
-                <p>Loading...</p>
-            }
-        </div>
-    </div>
-</div>
-
+<RecipeCardList searchTerm="@searchTerm" />
 @code {
-    [Parameter]
-    public int? id { get; set; }
+    [Parameter] public int? id { get; set; }
     string? searchTerm { get; set; }
     Recipe? recipe { get; set; }
-    List<Recipe>? recipes { get; set; }
-    List<Recipe>? filteredRecipes { get; set; }
-    protected override async Task OnInitializedAsync()
-    {
-        recipes = await context.Recipes
-        .Include(r => r.Ingredients)
-        .Include(r => r.Image)
-        .ToListAsync();
-        filteredRecipes = recipes;
-    }
     void UpdateFiltered(ChangeEventArgs e)
     {
         searchTerm = e.Value?.ToString();
-        if (recipes != null)
-        {
-            filteredRecipes = string.IsNullOrEmpty(searchTerm)
-            ? recipes
-            : recipes.Where(r => r!.Name!.Contains(searchTerm, StringComparison.OrdinalIgnoreCase)).ToList();
-        }
     }
     void ShowDetails(Recipe? recipe) => this.recipe = recipe;
     void ClearRecipe() => recipe = null;
 }
-
 <style>
     body {
         --inner-shadow: 0 0 5px #000 inset, 0 0 5px #fff inset;

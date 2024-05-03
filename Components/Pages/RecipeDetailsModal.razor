@@ -41,30 +41,21 @@
         </div>
     </div>
 }
-
 @code {
-    [Parameter]
-    public Recipe? Recipe { get; set; }
-
+    [Parameter]    public Recipe? Recipe { get; set; }
+    [Parameter]    public EventCallback Callback { get; set; }
     bool IsVisible { get; set; }
-
     string show => IsVisible ? "d-block" : "";
-
-    [Parameter]
-    public EventCallback Callback { get; set; }
-
     protected override void OnParametersSet()
     {
         if (Recipe is not null)
             Show(Recipe);
     }
-
     public void Show(Recipe recipe)
     {
         Recipe = recipe;
         IsVisible = true;
     }
-
     public void Hide()
     {
         Recipe = null;
@@ -72,7 +63,6 @@
         Callback.InvokeAsync();
     }
 }
-
 <style>
     .recipe-image {
         max-width: 100%;

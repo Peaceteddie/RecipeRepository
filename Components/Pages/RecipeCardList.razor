@@ -1,0 +1,60 @@
+@using Microsoft.EntityFrameworkCore
+@rendermode InteractiveServer
+<div class="recipe-container">
+    <div class="recipe-container-inner">
+        <div class="recipe-inner-inner">
+            @if (filteredRecipes is not null || recipes is not null)
+            {
+                foreach (var recipe in filteredRecipes ?? recipes ?? [])
+                {
+                    <RecipeCard Recipe="@recipe" CardClicked="() => ShowDetails(recipe)" />
+                }
+            }
+            else
+            {
+                <p>Loading...</p>
+            }
+        </div>
+    </div>
+</div>
+@code
+{
+    [Parameter]
+    public string? searchTerm
+    {
+        get => _searchTerm;
+        set
+        {
+            _searchTerm = value;
+            UpdateFiltered();
+        }
+    }
+    string? _searchTerm;
+    List<Recipe>? filteredRecipes { get; set; }
+    List<Recipe>? recipes { get; set; }
+    protected override void OnInitialized()
+    {
+        using RecipeDbContext context = new();
+        recipes = context.Recipes
+        .Include(r => r.Ingredients)
+        .Include(r => r.Image)
+        .ToList();
+        filteredRecipes = recipes;
+    }
+    void UpdateFiltered()
+    {
+        if (string.IsNullOrWhiteSpace(searchTerm))
+        {
+            filteredRecipes = recipes;
+            return;
+        }
+        filteredRecipes = recipes?
+        .Where(r => r.Name != null && r.Name.Contains(searchTerm, StringComparison.OrdinalIgnoreCase))
+        .ToList();
+    }
+    void ShowDetails(Recipe recipe)
+    {
+    @inject NavigationManager NavigationManager
+        NavigationManager.NavigateTo($"/recipe/{recipe.Id}");
+    }
+}
