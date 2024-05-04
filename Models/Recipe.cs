@@ -1,5 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.EntityFrameworkCore.Metadata.Conventions;
+using Npgsql.Replication;
 
 namespace RecipeRepository;
 
@@ -19,9 +21,11 @@ public class Recipe
     public List<RecipeTag> Tags { get; set; } = [];
     public List<int> Ratings { get; set; } = [];
     public List<Comment> Comments { get; set; } = [];
+    public bool Favorited { get; set; } = false;
 
 
     [NotMapped] public bool IsUploadInProgress = false;
+
 
     public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
     {
@@ -32,6 +36,11 @@ public class Recipe
                 [nameof(IsUploadInProgress)]);
         }
     }
+}
+
+public static class Extensions
+{
+    public static void ToggleFavorite(this Recipe recipe) => recipe.Favorited = !recipe.Favorited;
 }
 
 public enum CookingComplexity

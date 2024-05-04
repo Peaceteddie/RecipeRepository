@@ -7,12 +7,12 @@
             {
                 foreach (var recipe in filteredRecipes ?? recipes ?? [])
                 {
-                    <RecipeCard Recipe="@recipe" CardClicked="@(() => ShowDetails(recipe))" />
+                            <RecipeCard Recipe="@recipe" CardClicked="@(() => ShowDetails(recipe))" />
                 }
             }
             else
             {
-                <p>Loading...</p>
+                    <p>Loading...</p>
             }
         </div>
     </div>
@@ -42,6 +42,8 @@
         .Include(r => r.Ingredients)
         .Include(r => r.Image)
         .Include(r => r.Tags)
+        .OrderByDescending(r => r.Favorited)
+        .ThenBy(r => r.Name)
         .ToList();
     }
     void UpdateFiltered()
@@ -57,4 +59,16 @@
     }
     void ShowDetails(Recipe recipe)
     => OnClickCallback.InvokeAsync(recipe);
+
+    void OnFavorite()
+    {
+        if (recipes is not null)
+        {
+            recipes = recipes
+            .OrderByDescending(r => r.Favorited)
+            .ThenBy(r => r.Name)
+            .ToList();
+            StateHasChanged();
+        }
+    }
 }

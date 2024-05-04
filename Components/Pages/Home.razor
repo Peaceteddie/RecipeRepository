@@ -4,27 +4,41 @@
 @inject RecipeDbContext context;
 @inject NavigationManager NavigationalManager;
 <PageTitle>Recipes</PageTitle>
-<RecipeDetailsModal Recipe="recipe" Callback="ClearRecipe"
-    style="position:absolute;top:50vh;left:50vw;transform:translate(-50%,-50%)" />
-<h1 class="text-center">Recipes</h1>
-<div class="button-list mx-5 px-5">
-    <div id="create-button">
-        <NavLink href="/create-recipe">+</NavLink>
+<RecipeDetailsModal Recipe="recipe" Callback="ClearRecipe" style="position:absolute;z-index:1000;" />
+<div class="d-flex flex-column justify-content-between py-5" style="height:100vh;">
+    <div>
+        <h1 class="text-center">Recipes</h1>
+        <div class="button-list mx-5 px-5">
+            <div id="create-button">
+                <NavLink href="/create-recipe">+</NavLink>
+            </div>
+            <button id="random-recipe" @onclick="()=>RandomRecipe()">
+                Random
+            </button>
+            <div id="search-container">
+                <input class="bg-light m-3 px-3 search w-10" type="text" @bind-value="searchTerm"
+                    @oninput="UpdateFiltered" placeholder="Search..." />
+            </div>
+            <NavLink id="seasonal-map" href="/seasonal-map">Seasonal Map</NavLink>
+        </div>
     </div>
-    <button id="random-recipe">
-        Random
-    </button>
-    <div id="search-container">
-        <input class="bg-light m-3 px-3 search w-10" type="text" @bind-value="searchTerm" @oninput="UpdateFiltered"
-            placeholder="Search..." />
-    </div>
-    <NavLink id="seasonal-map" href="/seasonal-map">Seasonal Map</NavLink>
+    <RecipeCardList searchTerm="@searchTerm" OnClickCallback="@((Recipe recipe)=>ShowDetails(recipe))" />
 </div>
-<RecipeCardList searchTerm="@searchTerm" OnClickCallback="@((Recipe recipe)=>ShowDetails(recipe))" />
 @code {
     [Parameter] public int? id { get; set; }
     string? searchTerm { get; set; }
     Recipe? recipe { get; set; }
+    List<Recipe>? recipes { get; set; }
+    async Task RandomRecipe()
+    {
+        if (recipes == null)
+        {
+            recipes = await context.Recipes.Include(r => r.Ingredients).Include(r => r.Image).ToListAsync();
+        }
+        var random = new Random();
+        var index = random.Next(0, recipes.Count);
+        recipe = recipes[index];
+    }
     void UpdateFiltered(ChangeEventArgs e)
     {
         searchTerm = e.Value?.ToString();
@@ -106,6 +120,27 @@
         place-items: center;
     }
 
+    .recipe-container {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 2rem;
+        min-height: 75vh;
+        justify-content: center;
+        padding: 2rem;
+        min-width: fit-content;
+    }
+
+    .recipe-inner {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 2rem;
+        min-height: 40vh;
+        place-content: start;
+        place-items: start;
+        place-self: start;
+        padding-block: 2rem;
+    }
+
     .recipe-inner-inner {
         border-radius: 2rem;
         display: flex;
@@ -113,7 +148,11 @@
         gap: 2rem;
         height: 100%;
         justify-content: center;
+        max-height: 75vh;
+        overflow: auto;
         padding-block: 2rem;
+        scrollbar-color: var(--yellow-pastel) transparent;
+        scrollbar-width: auto;
         width: 100%;
     }
 

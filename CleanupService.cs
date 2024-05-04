@@ -22,8 +22,7 @@ public class CleanupService(IServiceScopeFactory scopeFactory) : BackgroundServi
         foreach (var image in images)
         {
             var imageName = Path.GetFileName(image);
-            var recipe =
-                dbContext.Recipes
+            var recipe = dbContext.Recipes
                 .Include(r => r.Image)
                 .FirstOrDefault(r => r.Image != null && r.Image.Path != null && r.Image.Path.Contains(imageName));
             if (recipe == null)

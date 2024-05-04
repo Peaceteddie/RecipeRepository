@@ -1,4 +1,7 @@
 <button class="recipe-card" @onclick="OnCardClick">
+    <img class="recipe-star" src="icons/@((Recipe?.Favorited ?? false) ? "filled-star.png":"empty-star.png")"
+        alt="Favorite" @onclick="()=>{OnFavorite();}" @onmouseover="()=>{isHovered = true;}"
+        @onmouseleave="()=>{isHovered = false;}" />
     <img class="recipe-image" src="@Recipe?.Image!.Path" alt="@Recipe?.Name" />
     <div class="recipe-details">
         <h2 class="recipe-title">@Recipe?.Name</h2>
@@ -7,7 +10,10 @@
 @code {
     [Parameter] public Recipe? Recipe { get; set; }
     [Parameter] public EventCallback<Recipe> CardClicked { get; set; }
-    void OnCardClick() => CardClicked.InvokeAsync(Recipe);
+
+    void OnCardClick() { if (!isHovered) CardClicked.InvokeAsync(Recipe); }
+    void OnFavorite() { Recipe!.Favorited = !Recipe!.Favorited; }
+    bool isHovered = false;
 }
 <style>
     .recipe-card {
@@ -16,12 +22,23 @@
         max-height: 256px;
         max-width: 256px;
         padding: 0;
+        position: relative;
     }
+
+    .recipe-star {
+        height: 2rem;
+        width: 2rem;
+        position: absolute;
+        right: 0.5rem;
+        top: 0.5rem;
+    }
+
     .recipe-image {
         border-radius: 0.5rem;
         max-height: 100%;
         max-width: 100%;
     }
+
     .recipe-details {
         --height: 2.5rem;
         background: #000a;
@@ -35,6 +52,7 @@
         flex-direction: column;
         position: relative;
     }
+
     .recipe-title {
         border-radius: 0 0 20px 20px;
         color: orange;
